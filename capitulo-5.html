@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>⛵ Conquista e colonização portuguesa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Verdana', 'Arial', sans-serif;
+            background: #f5f7f6;
+            color: #1a2e2a;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            margin: 0;
+        }
+
+        .reader-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            padding: 12px 18px;
+            border: 1px solid #dde5e0;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .fixed-header {
+            margin-bottom: 10px;
+            border-bottom: 2px solid #dde5e0;
+            padding-bottom: 6px;
+        }
+        .fixed-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f3d2e;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a5e44;
+            margin-bottom: 4px;
+        }
+        .progress-bar-bg {
+            background: #dee6e1;
+            height: 6px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #1a7a58;
+            height: 6px;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.2s;
+        }
+
+        .text-content {
+            text-align: justify;
+            padding: 6px 0 12px;
+            max-height: 75vh;
+            overflow-y: auto;
+            font-size: 18px;
+            line-height: 1.8;
+            margin: 0 2px;
+            scroll-behavior: smooth;
+        }
+        .text-content p { margin-bottom: 0.8em; }
+        .text-content h2, .text-content h3, .text-content h4 {
+            margin: 1em 0 0.3em;
+            color: #154e3a;
+            font-weight: 600;
+        }
+        .text-content ul, .text-content ol {
+            padding-left: 1.8em;
+            margin: 0.4em 0;
+        }
+        .text-content li {
+            margin-bottom: 0.3em;
+        }
+
+        .speech-word {
+            transition: background-color 0.15s ease, color 0.15s ease;
+            border-radius: 3px;
+            padding: 1px 2px;
+            margin: 0 1px;
+        }
+        .speech-word.active {
+            background-color: #ffeb3b;
+            color: #000;
+            font-weight: 600;
+        }
+        .speech-word.upcoming {
+            background-color: #fff9c4;
+        }
+
+        .img-text-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .img-container {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+        .img-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .img-caption {
+            font-size: 0.8rem;
+            color: #5a7a6a;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        .text-container {
+            flex: 2;
+            min-width: 180px;
+        }
+        .right-image .text-container { order: 1; }
+        .right-image .img-container { order: 2; }
+        .left-image .text-container { order: 2; }
+        .left-image .img-container { order: 1; }
+
+        .toolbar-single {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            margin: 14px 0 10px;
+            padding: 4px 0 6px;
+            border-top: 1px solid #dde5e0;
+            border-bottom: 1px solid #dde5e0;
+        }
+        .tool-btn {
+            background: #ecf3ef;
+            border: 1px solid #b3cdbf;
+            color: #134531;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 48px;
+            min-width: 50px;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .tool-btn:active { background: #d0e0d7; transform: scale(0.96); }
+        .tool-btn:disabled { opacity: 0.4; background: #e0e8e3; border-color: #b6ccc1; pointer-events: none; }
+        .tool-btn.hidden { display: none; }
+
+        .capa {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .capa h1 { font-size: 32px; margin-bottom: 16px; color: #0f3d2e; }
+        .capa h2 { font-size: 26px; margin-bottom: 30px; color: #1a5e44; }
+        .capa p { font-size: 20px; color: #2a5e4a; }
+
+        .congrats-page {
+            text-align: center;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 40vh;
+        }
+        .congrats-page h2 { color: #1a5e44; margin-bottom: 10px; font-size: 1.8rem; }
+        .congrats-image { text-align: center; margin: 15px auto; }
+        .congrats-image img {
+            transform: scale(1.2);
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .reader-wrapper {
+                padding: 8px 10px;
+                border-radius: 16px;
+            }
+            .tool-btn { padding: 6px 8px; min-width: 44px; font-size: 0.85rem; }
+            .img-text-row { flex-direction: column; gap: 10px; }
+            .right-image .text-container, .right-image .img-container,
+            .left-image .text-container, .left-image .img-container { order: unset; }
+            .text-content {
+                max-height: 70vh;
+                font-size: 16px;
+            }
+            .fixed-header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="reader-wrapper">
+    <div id="readerScreen" class="screen active">
+        <div class="fixed-header">
+            <h1>⛵ Conquista e colonização portuguesa</h1>
+            <div class="progress-row">
+                <span id="pageXofY">Página 1 de 11</span>
+                <span id="progressPercent">9%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="text-content" id="pageContent"></div>
+        <div class="toolbar-single">
+            <button class="tool-btn" id="fontMinusBtn" title="Diminuir fonte">A−</button>
+            <button class="tool-btn" id="fontPlusBtn" title="Aumentar fonte">A+</button>
+            <button class="tool-btn" id="fullscreenBtn" title="Tela cheia">⛶</button>
+            <button class="tool-btn" id="prevBtnInline" title="Página anterior">◀</button>
+            <button class="tool-btn" id="nextBtnInline" title="Próxima página">▶</button>
+            <button class="tool-btn" id="speakBtn" title="Ouvir">🔊</button>
+            <button class="tool-btn hidden" id="pauseBtn" title="Pausar">⏸️</button>
+            <button class="tool-btn hidden" id="resumeBtn" title="Retomar">▶️</button>
+            <button class="tool-btn hidden" id="stopBtn" title="Parar">⏹️</button>
+            <select id="rateSelect" class="tool-btn" style="width: auto; background: #ecf3ef; border: 1px solid #b3cdbf; padding: 8px 12px;">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ============ CONTEÚDO DAS PÁGINAS ============
+        const pageContents = [
+            // Página 1 – Capa
+            `<div class="capa">
+                <h1>⛵ Conquista e colonização portuguesa</h1>
+                <h2>América portuguesa: dominação, resistência e diversidade</h2>
+                <p>Professora Angela Siqueira</p>
+            </div>`,
+
+            // Página 2 – Índice
+            `<div class="text-container" style="max-width:100%;">
+                <h3>📌 ÍNDICE</h3>
+                <ol>
+                    <li>5.1 – Povos indígenas: dominação e resistência – Pág. 4</li>
+                    <li>5.2 – Ocupação do litoral e do interior – Pág. 5</li>
+                    <li>5.3 – Diversidade da produção: da cana ao ouro – Pág. 6</li>
+                    <li>5.4 – Administração e organização sociopolítica – Pág. 7</li>
+                    <li>5.5 – Escravidão e outras formas de trabalho – Pág. 8</li>
+                    <li>5.6 – Igreja, religião e religiosidades – Pág. 9</li>
+                    <li>5.7 – Produção artística: diálogos e tensões – Pág. 10</li>
+                </ol>
+            </div>`,
+
+            // Página 3 – Contexto geral
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>Contexto geral</h3>
+                    <p>A colonização portuguesa na América (séc. XVI–XVIII) foi marcada pela exploração econômica, pela imposição cultural e religiosa, e por profundas transformações nas sociedades indígenas.</p>
+                    <p>O sistema colonial português combinou <strong>extração de recursos</strong> (pau-brasil, açúcar, ouro), <strong>trabalho forçado</strong> (indígena e africano) e uma <strong>estrutura administrativa</strong> que ligava o Brasil à metrópole.</p>
+                    <p>Neste capítulo, exploramos os principais aspectos da conquista e da colonização, destacando as resistências indígenas, a diversidade produtiva, as instituições coloniais e as expressões culturais que emergiram desse processo.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/iBlOtq7.png" alt="Mapa do Brasil colonial ou chegada dos portugueses">
+                    <div class="img-caption">O início da colonização portuguesa na América</div>
+                </div>
+            </div>`,
+
+            // Página 4 – 5.1 Povos indígenas: dominação e resistência
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/gs7Sq7L.png" alt="Índios e colonos – dominação e resistência">
+                    <div class="img-caption">Resistência indígena à colonização</div>
+                </div>
+                <div class="text-container">
+                    <h3>5.1 Povos indígenas: dominação e resistência</h3>
+                    <ul>
+                        <li><strong>Dominação:</strong> escravização, aldeamentos forçados (missões), guerras justas, epidemias (varíola, sarampo) e perda territorial.</li>
+                        <li><strong>Resistência:</strong> fugas, alianças entre tribos, ataques a feitorias e povoações, e adaptação cultural.</li>
+                        <li><strong>Exemplos:</strong> Confederação dos Tamoios (1554–1567), resistência dos Caetés, dos Potiguaras e dos Guaicurus.</li>
+                        <li><strong>Missões jesuíticas:</strong> catequese e proteção parcial, mas também controle e exploração do trabalho indígena.</li>
+                    </ul>
+                    <p>Estima-se que a população indígena caiu de cerca de 5 milhões (1500) para menos de 1 milhão no século XVIII.</p>
+                </div>
+            </div>`,
+
+            // Página 5 – 5.2 Ocupação do litoral e do interior
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>5.2 Ocupação do litoral e do interior</h3>
+                    <ul>
+                        <li><strong>Litoral:</strong> Primeiras capitanias hereditárias (1534), vilas e engenhos. Destaque para Salvador, Recife, Rio de Janeiro e São Vicente.</li>
+                        <li><strong>Interior:</strong> Entradas e bandeiras – expedições de apresamento indígena e busca por metais (ouro, prata).</li>
+                        <li><strong>Expansão para o Oeste:</strong> Ciclo do ouro (Minas Gerais, Goiás, Mato Grosso) – séc. XVIII.</li>
+                        <li><strong>Pecuária:</strong> O gado acompanhou a expansão, criando uma economia complementar no sertão.</li>
+                    </ul>
+                    <p>O <strong>Tratado de Tordesilhas</strong> (1494) foi ultrapassado pela expansão real, consolidando as fronteiras atuais do Brasil.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/hfXTHfD.png" alt="Mapa das bandeiras e expansão territorial">
+                    <div class="img-caption">Bandeiras e a expansão para o interior</div>
+                </div>
+            </div>`,
+
+            // Página 6 – 5.3 Diversidade da produção: da cana ao ouro
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/8Y29Ncr.png" alt="Engenho de açúcar e mineração">
+                    <div class="img-caption">Da cana-de-açúcar ao ouro – ciclos econômicos</div>
+                </div>
+                <div class="text-container">
+                    <h3>5.3 Diversidade da produção</h3>
+                    <ul>
+                        <li><strong>Cana-de-açúcar (séc. XVI–XVII):</strong> Principal produto da colônia, no Nordeste. Usava mão de obra escrava (indígena e africana).</li>
+                        <li><strong>Tabaco e algodão:</strong> Cultivos complementares, especialmente na Bahia e no Maranhão.</li>
+                        <li><strong>Pecuária:</strong> No sertão nordestino e no Sul, forneceu couro e carne.</li>
+                        <li><strong>Ouro e diamantes (séc. XVIII):</strong> Minas Gerais, Mato Grosso e Goiás – transformaram a economia e a administração colonial.</li>
+                    </ul>
+                    <p>A <strong>diversidade produtiva</strong> refletiu a adaptação dos colonos às diferentes regiões e a busca constante por novos recursos.</p>
+                </div>
+            </div>`,
+
+            // Página 7 – 5.4 Administração e organização sociopolítica
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>5.4 Administração e organização sociopolítica</h3>
+                    <ul>
+                        <li><strong>Governo-geral (1549):</strong> Centralização administrativa, com sede em Salvador.</li>
+                        <li><strong>Câmaras municipais:</strong> Poder local, controlado pela elite dos "homens bons".</li>
+                        <li><strong>Capitanias hereditárias:</strong> Sistema que fracassou em parte, mas que deu origem a algumas unidades administrativas.</li>
+                        <li><strong>Intendências (séc. XVIII):</strong> Maior controle metropolitano sobre a extração de ouro e diamantes.</li>
+                        <li><strong>Hierarquia social:</strong> Brancos (nascidos em Portugal ou no Brasil), mestiços, indígenas e negros escravizados.</li>
+                    </ul>
+                    <p>A <strong>sociedade colonial</strong> era profundamente desigual, com privilégios para a elite branca e exclusão dos grupos subalternos.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/2NpbHEh.png" alt="Salvador colonial – sede do governo-geral">
+                    <div class="img-caption">Salvador – centro da administração colonial</div>
+                </div>
+            </div>`,
+
+            // Página 8 – 5.5 Escravidão e outras formas de trabalho
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/JS18MeV.png" alt="Escravidão na colônia – plantação e senzala">
+                    <div class="img-caption">Trabalho escravo nas plantations</div>
+                </div>
+                <div class="text-container">
+                    <h3>5.5 Escravidão e outras formas de trabalho</h3>
+                    <ul>
+                        <li><strong>Escravidão indígena:</strong> Praticada no início da colonização, mas substituída pela africana devido à resistência e às epidemias.</li>
+                        <li><strong>Escravidão africana:</strong> Principal mão de obra – mais de 4 milhões de africanos desembarcaram no Brasil até 1850.</li>
+                        <li><strong>Outras formas:</strong> Trabalho livre (artesãos, pequenos comerciantes), trabalho assalariado (raros), e parcerias (colonos sem terra).</li>
+                        <li><strong>Resistência:</strong> Quilombos (ex.: Palmares), fugas, sabotagens e revoltas.</li>
+                    </ul>
+                    <p>A <strong>escravidão</strong> foi o esteio da economia colonial e deixou marcas profundas na sociedade brasileira.</p>
+                </div>
+            </div>`,
+
+            // Página 9 – 5.6 Igreja, religião e religiosidades
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>5.6 Igreja, religião e religiosidades</h3>
+                    <ul>
+                        <li><strong>Igreja Católica:</strong> Instituição central – catequese, educação, assistência social e legitimação do poder colonial.</li>
+                        <li><strong>Ordens religiosas:</strong> Jesuítas, franciscanos, beneditinos – fundaram colégios, missões e reduções.</li>
+                        <li><strong>Sincretismo religioso:</strong> Mistura de elementos indígenas, africanos e católicos (ex.: festas, danças, devoções).</li>
+                        <li><strong>Devoção popular:</strong> Santos, romeiros, irmandades – expressões de fé que escapavam ao controle da hierarquia.</li>
+                    </ul>
+                    <p>A <strong>religiosidade colonial</strong> foi um espaço de negociação, resistência e criatividade cultural.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/ISc4l9u.png" alt="Igreja barroca colonial – São Francisco">
+                    <div class="img-caption">Igreja barroca – símbolo da presença católica</div>
+                </div>
+            </div>`,
+
+            // Página 10 – 5.7 Produção artística: diálogos e tensões
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/4EGwght.png" alt="Arte barroca – Aleijadinho ou pintura colonial">
+                    <div class="img-caption">Barroco mineiro – Aleijadinho e o sincretismo artístico</div>
+                </div>
+                <div class="text-container">
+                    <h3>5.7 Produção artística: diálogos e tensões</h3>
+                    <ul>
+                        <li><strong>Arte sacra:</strong> Esculturas, pinturas e talhas douradas – expressão da fé católica e do poder da Igreja.</li>
+                        <li><strong>Barroco mineiro:</strong> Aleijadinho, Ataíde – obras que combinam influências europeias, indígenas e africanas.</li>
+                        <li><strong>Música e literatura:</strong> Música religiosa, poesia barroca (Gregório de Matos), teatro jesuítico.</li>
+                        <li><strong>Artesanato e cultura material:</strong> Cerâmica, tecelagem, ourivesaria – técnicas indígenas e africanas mescladas com modelos europeus.</li>
+                    </ul>
+                    <p>A <strong>produção artística colonial</strong> é um testemunho dos diálogos e tensões entre as diferentes culturas que formaram o Brasil.</p>
+                </div>
+            </div>`,
+
+            // Página 11 – Fechamento
+            `<div class="congrats-page">
+                <h2>🎉 Parabéns!</h2>
+                <p style="margin-top: 20px;">Você concluiu a leitura sobre a conquista e colonização portuguesa.</p>
+                <div class="congrats-image">
+                    <img src="https://media.tenor.com/1Gq9HnEJ5wMAAAAM/shih-tzu-shihtzu.gif" alt="Parabéns">
+                </div>
+                <p style="margin-top: 20px;">Isso é Tudo por Hoje!</p>
+            </div>`
+        ];
+
+        const totalPages = pageContents.length;
+        let currentPage = 0;
+        let fontSizeIndex = 4;
+        const fontSizes = [12, 14, 16, 18, 20, 24, 28, 32, 38, 42];
+
+        // Elementos DOM
+        const pageContent = document.getElementById('pageContent');
+        const pageXofY = document.getElementById('pageXofY');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const fontMinus = document.getElementById('fontMinusBtn');
+        const fontPlus = document.getElementById('fontPlusBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const prevBtn = document.getElementById('prevBtnInline');
+        const nextBtn = document.getElementById('nextBtnInline');
+        const speakBtn = document.getElementById('speakBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const rateSelect = document.getElementById('rateSelect');
+
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let isPaused = false;
+        let speechToken = null;
+        let previousActiveSpan = null;
+        let wordSpans = [];
+        let charIndexToSpanMap = [];
+        let currentCharIndex = 0;
+
+        function getFemaleVoice() {
+            const voices = synth.getVoices();
+            const ptVoices = voices.filter(v => v.lang === 'pt-BR');
+            const female = ptVoices.find(v =>
+                v.name.toLowerCase().includes('female') ||
+                v.name.toLowerCase().includes('mulher') ||
+                v.name.includes('Samantha') ||
+                v.name.includes('Maria')
+            );
+            return female || ptVoices[0] || voices[0];
+        }
+
+        function tokenizeTextNodes(root) {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+            const textNodes = [];
+            while (walker.nextNode()) {
+                textNodes.push(walker.currentNode);
+            }
+            textNodes.forEach(node => {
+                const text = node.textContent;
+                if (!text.trim()) return;
+                const fragment = document.createDocumentFragment();
+                const parts = text.split(/(\s+)/);
+                parts.forEach(part => {
+                    if (part.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'speech-word';
+                        span.textContent = part;
+                        fragment.appendChild(span);
+                    } else {
+                        fragment.appendChild(document.createTextNode(part));
+                    }
+                });
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+
+        function buildCharMap() {
+            wordSpans = Array.from(pageContent.querySelectorAll('.speech-word'));
+            charIndexToSpanMap = [];
+            wordSpans.forEach((span, idx) => {
+                const len = span.textContent.length;
+                for (let i = 0; i < len; i++) {
+                    charIndexToSpanMap.push(idx);
+                }
+                if (idx < wordSpans.length - 1) {
+                    charIndexToSpanMap.push(idx);
+                }
+            });
+        }
+
+        function highlightWordSpan(spanIndex) {
+            if (previousActiveSpan !== null && previousActiveSpan !== undefined) {
+                const prevSpan = wordSpans[previousActiveSpan];
+                if (prevSpan) {
+                    prevSpan.classList.remove('active');
+                    prevSpan.classList.remove('upcoming');
+                }
+            }
+            if (spanIndex >= 0 && spanIndex < wordSpans.length) {
+                const currentSpan = wordSpans[spanIndex];
+                currentSpan.classList.add('active');
+                currentSpan.classList.remove('upcoming');
+                previousActiveSpan = spanIndex;
+                currentSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function markUpcoming(spanIndex) {
+            wordSpans.forEach(s => s.classList.remove('upcoming'));
+            for (let i = 1; i <= 3; i++) {
+                const nextIdx = spanIndex + i;
+                if (nextIdx < wordSpans.length) {
+                    wordSpans[nextIdx].classList.add('upcoming');
+                }
+            }
+        }
+
+        function clearAllWordHighlights() {
+            wordSpans.forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('upcoming');
+            });
+            previousActiveSpan = null;
+        }
+
+        function syncHighlightFromCharIndex() {
+            if (currentCharIndex >= charIndexToSpanMap.length) return;
+            const spanIdx = charIndexToSpanMap[currentCharIndex];
+            if (spanIdx !== undefined && spanIdx !== previousActiveSpan) {
+                highlightWordSpan(spanIdx);
+                markUpcoming(spanIdx);
+            }
+        }
+
+        function showPlayingUI() {
+            speakBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            stopBtn.classList.remove('hidden');
+            resumeBtn.classList.add('hidden');
+        }
+
+        function showPausedUI() {
+            pauseBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+            resumeBtn.classList.remove('hidden');
+            speakBtn.classList.add('hidden');
+        }
+
+        function showStoppedUI() {
+            speakBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+            resumeBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+        }
+
+        function startReading() {
+            if (!synth) {
+                alert('Seu navegador não suporta síntese de voz.');
+                return;
+            }
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                isSpeaking = true;
+                showPlayingUI();
+                return;
+            }
+            if (isSpeaking) {
+                stopReading();
+                return;
+            }
+
+            if (pageContent.querySelectorAll('.speech-word').length === 0) {
+                tokenizeTextNodes(pageContent);
+            }
+            buildCharMap();
+            if (wordSpans.length === 0) return;
+
+            const text = wordSpans.map(s => s.textContent).join(' ');
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            const voice = getFemaleVoice();
+            if (voice) currentUtterance.voice = voice;
+            currentUtterance.rate = parseFloat(rateSelect.value);
+
+            const token = Date.now();
+            speechToken = token;
+            currentCharIndex = 0;
+
+            currentUtterance.onboundary = function(event) {
+                if (speechToken !== token) return;
+                if (event.name === 'word') {
+                    currentCharIndex = event.charIndex;
+                    syncHighlightFromCharIndex();
+                }
+            };
+
+            currentUtterance.onstart = function() {
+                if (speechToken !== token) return;
+                isSpeaking = true;
+                isPaused = false;
+                showPlayingUI();
+            };
+
+            currentUtterance.onend = function() {
+                if (speechToken !== token) return;
+                resetSpeechState();
+            };
+
+            currentUtterance.onerror = function(e) {
+                if (speechToken !== token) return;
+                if (e.error !== 'canceled' && e.error !== 'interrupted') {
+                    console.warn('Speech error:', e.error);
+                }
+                resetSpeechState();
+            };
+
+            synth.speak(currentUtterance);
+        }
+
+        function pauseReading() {
+            if (synth && isSpeaking && !isPaused) {
+                synth.pause();
+                isPaused = true;
+                showPausedUI();
+            }
+        }
+
+        function resumeReading() {
+            if (synth && isPaused) {
+                synth.resume();
+                isPaused = false;
+                isSpeaking = true;
+                showPlayingUI();
+            }
+        }
+
+        function stopReading() {
+            if (synth) synth.cancel();
+            resetSpeechState();
+        }
+
+        function resetSpeechState() {
+            if (synth && synth.speaking) synth.cancel();
+            if (currentUtterance) {
+                currentUtterance.onboundary = null;
+                currentUtterance.onstart = null;
+                currentUtterance.onend = null;
+                currentUtterance.onerror = null;
+                currentUtterance = null;
+            }
+            isSpeaking = false;
+            isPaused = false;
+            speechToken = null;
+            currentCharIndex = 0;
+            clearAllWordHighlights();
+            showStoppedUI();
+        }
+
+        function updateUI() {
+            resetSpeechState();
+            pageContent.innerHTML = pageContents[currentPage];
+            const num = currentPage + 1;
+            pageXofY.textContent = `Página ${num} de ${totalPages}`;
+            const pct = (num / totalPages) * 100;
+            progressFill.style.width = pct + '%';
+            progressPercent.textContent = Math.round(pct) + '%';
+            prevBtn.disabled = (currentPage === 0);
+            nextBtn.disabled = (currentPage === totalPages - 1);
+            if (pageContent.scrollTop) pageContent.scrollTop = 0;
+        }
+
+        function applyFontSize() {
+            const size = fontSizes[fontSizeIndex] + 'px';
+            pageContent.style.fontSize = size;
+            fontMinus.disabled = (fontSizeIndex === 0);
+            fontPlus.disabled = (fontSizeIndex === fontSizes.length - 1);
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 0 && newPage < totalPages) {
+                currentPage = newPage;
+                updateUI();
+            }
+        }
+
+        // Event listeners
+        fontMinus.addEventListener('click', () => {
+            if (fontSizeIndex > 0) fontSizeIndex--;
+            applyFontSize();
+        });
+        fontPlus.addEventListener('click', () => {
+            if (fontSizeIndex < fontSizes.length - 1) fontSizeIndex++;
+            applyFontSize();
+        });
+        fullscreenBtn.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        });
+        prevBtn.addEventListener('click', () => changePage(-1));
+        nextBtn.addEventListener('click', () => changePage(1));
+
+        speakBtn.addEventListener('click', startReading);
+        pauseBtn.addEventListener('click', pauseReading);
+        resumeBtn.addEventListener('click', resumeReading);
+        stopBtn.addEventListener('click', stopReading);
+
+        rateSelect.addEventListener('change', () => {
+            if (currentUtterance && isSpeaking && !isPaused) {
+                currentUtterance.rate = parseFloat(rateSelect.value);
+            }
+        });
+
+        // Inicialização
+        applyFontSize();
+        updateUI();
+        if (synth) synth.getVoices();
+    })();
+</script>
+</body>
+</html>
