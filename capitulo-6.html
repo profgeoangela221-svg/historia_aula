@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>🇧🇷 Brasil República</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Verdana', 'Arial', sans-serif;
+            background: #f5f7f6;
+            color: #1a2e2a;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            margin: 0;
+        }
+
+        .reader-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            padding: 12px 18px;
+            border: 1px solid #dde5e0;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .fixed-header {
+            margin-bottom: 10px;
+            border-bottom: 2px solid #dde5e0;
+            padding-bottom: 6px;
+        }
+        .fixed-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f3d2e;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a5e44;
+            margin-bottom: 4px;
+        }
+        .progress-bar-bg {
+            background: #dee6e1;
+            height: 6px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #1a7a58;
+            height: 6px;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.2s;
+        }
+
+        .text-content {
+            text-align: justify;
+            padding: 6px 0 12px;
+            max-height: 75vh;
+            overflow-y: auto;
+            font-size: 18px;
+            line-height: 1.8;
+            margin: 0 2px;
+            scroll-behavior: smooth;
+        }
+        .text-content p { margin-bottom: 0.8em; }
+        .text-content h2, .text-content h3, .text-content h4 {
+            margin: 1em 0 0.3em;
+            color: #154e3a;
+            font-weight: 600;
+        }
+        .text-content ul, .text-content ol {
+            padding-left: 1.8em;
+            margin: 0.4em 0;
+        }
+        .text-content li {
+            margin-bottom: 0.3em;
+        }
+
+        .speech-word {
+            transition: background-color 0.15s ease, color 0.15s ease;
+            border-radius: 3px;
+            padding: 1px 2px;
+            margin: 0 1px;
+        }
+        .speech-word.active {
+            background-color: #ffeb3b;
+            color: #000;
+            font-weight: 600;
+        }
+        .speech-word.upcoming {
+            background-color: #fff9c4;
+        }
+
+        .img-text-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .img-container {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+        .img-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .img-caption {
+            font-size: 0.8rem;
+            color: #5a7a6a;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        .text-container {
+            flex: 2;
+            min-width: 180px;
+        }
+        .right-image .text-container { order: 1; }
+        .right-image .img-container { order: 2; }
+        .left-image .text-container { order: 2; }
+        .left-image .img-container { order: 1; }
+
+        .toolbar-single {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            margin: 14px 0 10px;
+            padding: 4px 0 6px;
+            border-top: 1px solid #dde5e0;
+            border-bottom: 1px solid #dde5e0;
+        }
+        .tool-btn {
+            background: #ecf3ef;
+            border: 1px solid #b3cdbf;
+            color: #134531;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 48px;
+            min-width: 50px;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .tool-btn:active { background: #d0e0d7; transform: scale(0.96); }
+        .tool-btn:disabled { opacity: 0.4; background: #e0e8e3; border-color: #b6ccc1; pointer-events: none; }
+        .tool-btn.hidden { display: none; }
+
+        .capa {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .capa h1 { font-size: 32px; margin-bottom: 16px; color: #0f3d2e; }
+        .capa h2 { font-size: 26px; margin-bottom: 30px; color: #1a5e44; }
+        .capa p { font-size: 20px; color: #2a5e4a; }
+
+        .congrats-page {
+            text-align: center;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 40vh;
+        }
+        .congrats-page h2 { color: #1a5e44; margin-bottom: 10px; font-size: 1.8rem; }
+        .congrats-image { text-align: center; margin: 15px auto; }
+        .congrats-image img {
+            transform: scale(1.2);
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .reader-wrapper {
+                padding: 8px 10px;
+                border-radius: 16px;
+            }
+            .tool-btn { padding: 6px 8px; min-width: 44px; font-size: 0.85rem; }
+            .img-text-row { flex-direction: column; gap: 10px; }
+            .right-image .text-container, .right-image .img-container,
+            .left-image .text-container, .left-image .img-container { order: unset; }
+            .text-content {
+                max-height: 70vh;
+                font-size: 16px;
+            }
+            .fixed-header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="reader-wrapper">
+    <div id="readerScreen" class="screen active">
+        <div class="fixed-header">
+            <h1>🇧🇷 Brasil República · Das oligarquias ao século XXI</h1>
+            <div class="progress-row">
+                <span id="pageXofY">Página 1 de 14</span>
+                <span id="progressPercent">7%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="text-content" id="pageContent"></div>
+        <div class="toolbar-single">
+            <button class="tool-btn" id="fontMinusBtn" title="Diminuir fonte">A−</button>
+            <button class="tool-btn" id="fontPlusBtn" title="Aumentar fonte">A+</button>
+            <button class="tool-btn" id="fullscreenBtn" title="Tela cheia">⛶</button>
+            <button class="tool-btn" id="prevBtnInline" title="Página anterior">◀</button>
+            <button class="tool-btn" id="nextBtnInline" title="Próxima página">▶</button>
+            <button class="tool-btn" id="speakBtn" title="Ouvir">🔊</button>
+            <button class="tool-btn hidden" id="pauseBtn" title="Pausar">⏸️</button>
+            <button class="tool-btn hidden" id="resumeBtn" title="Retomar">▶️</button>
+            <button class="tool-btn hidden" id="stopBtn" title="Parar">⏹️</button>
+            <select id="rateSelect" class="tool-btn" style="width: auto; background: #ecf3ef; border: 1px solid #b3cdbf; padding: 8px 12px;">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ============ CONTEÚDO DAS PÁGINAS ============
+        const pageContents = [
+            // Página 1 – Capa
+            `<div class="capa">
+                <h1>🇧🇷 Brasil República</h1>
+                <h2>Das oligarquias ao século XXI</h2>
+                <p>Professora Angela Siqueira</p>
+            </div>`,
+
+            // Página 2 – Índice
+            `<div class="text-container" style="max-width:100%;">
+                <h3>📌 ÍNDICE</h3>
+                <ol>
+                    <li>6.1 – O movimento republicano e a Proclamação da República – Pág. 3</li>
+                    <li>6.2 – Primeira República: política, economia e movimentos sociais – Pág. 4</li>
+                    <li>6.3 – Getúlio Vargas: do governo provisório ao Estado Novo – Pág. 5</li>
+                    <li>6.4 – Do fim do Estado Novo ao Golpe de 1964 – Pág. 6</li>
+                    <li>6.5 – Nacionalismo ou desenvolvimentismo – Pág. 7</li>
+                    <li>6.6 – Política de massas e crises institucionais – Pág. 8</li>
+                    <li>6.7 – O Regime Civil-Militar – Pág. 9</li>
+                    <li>6.8 – Redemocratização: a "Nova República" – Pág. 10</li>
+                    <li>6.9 – A Constituição de 1988: a promoção e proteção de direitos – Pág. 11</li>
+                    <li>6.10 – Estabilização financeira e política de privatizações – Pág. 12</li>
+                    <li>6.11 – O Brasil no século XXI: relações de poder, desigualdades e o legado do patriarcalismo e da escravidão – Pág. 13</li>
+                </ol>
+            </div>`,
+
+            // Página 3 – 6.1 O movimento republicano e a Proclamação da República
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/0N9cuMK.png" alt="Proclamação da República – quadro de Benedito Calixto">
+                    <div class="img-caption">A Proclamação da República – 15 de novembro de 1889</div>
+                </div>
+                <div class="text-container">
+                    <h3>6.1 O movimento republicano e a Proclamação da República</h3>
+                    <p>O movimento republicano ganhou força no final do Império, impulsionado por:<p>
+                    <ul>
+                        <li><strong>Crise do regime imperial:</strong> desgaste com a Igreja, os militares e os fazendeiros (questão abolicionista).</li>
+                        <li><strong>Ideais positivistas e liberais:</strong> Defesa da federalização, do presidencialismo e da modernização.</li>
+                        <li><strong>Golpe militar (1889):</strong> Marechal Deodoro da Fonseca depõe Dom Pedro II, instaurando a República.</li>
+                        <li><strong>Primeira Constituição republicana (1891):</strong> Federalismo, presidencialismo e separação Igreja-Estado.</li>
+                    </ul>
+                    <p>O novo regime, porém, nasceu sob forte controle das oligarquias (café-com-leite) e excluiu a maioria da população do processo político.</p>
+                </div>
+            </div>`,
+
+            // Página 4 – 6.2 Primeira República: política, economia e movimentos sociais
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>6.2 Primeira República (1889–1930)</h3>
+                    <ul>
+                        <li><strong>Política:</strong> Política dos Governadores, coronelismo, fraude eleitoral e alternância entre São Paulo e Minas Gerais (café-com-leite).</li>
+                        <li><strong>Economia:</strong> Predomínio da cafeicultura, industrialização incipiente (Sudeste), e dependência externa.</li>
+                        <li><strong>Movimentos sociais:</strong> Canudos (1893-97), Contestado (1912-16), revoltas operárias, greves (1917-19), e o tenentismo (anos 1920).</li>
+                        <li><strong>Cultura:</strong> Modernismo (Semana de 1922) e início do pensamento nacionalista.</li>
+                    </ul>
+                    <p>A crise de 1929 e o esgotamento do modelo oligárquico abriram caminho para a Revolução de 1930.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/jNgjUKa.png" alt="Charge política da Primeira República – coronelismo">
+                    <div class="img-caption">Coronelismo e política oligárquica</div>
+                </div>
+            </div>`,
+
+            // Página 5 – 6.3 Getúlio Vargas: do governo provisório ao Estado Novo
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/kaeDEAb.png" alt="Getúlio Vargas – discurso ou fotografia histórica">
+                    <div class="img-caption">Getúlio Vargas – o líder que marcou a história republicana</div>
+                </div>
+                <div class="text-container">
+                    <h3>6.3 Getúlio Vargas: do governo provisório ao Estado Novo</h3>
+                    <ul>
+                        <li><strong>Governo provisório (1930-34):</strong> Centralização, reformas trabalhistas e Código Eleitoral (voto secreto feminino).</li>
+                        <li><strong>Constituição de 1934:</strong> Avanços sociais, mas breve.</li>
+                        <li><strong>Estado Novo (1937-45):</strong> Ditadura, censura, exaltação nacionalista, e fortalecimento do intervencionismo estatal (CLT, criação de estatais).</li>
+                        <li><strong>Segunda Guerra:</strong> Brasil ao lado dos Aliados – participação da FEB.</li>
+                    </ul>
+                    <p>O Estado Novo modernizou o país, mas com forte repressão política e culto à personalidade.</p>
+                </div>
+            </div>`,
+
+            // Página 6 – 6.4 Do fim do Estado Novo ao Golpe de 1964
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>6.4 Do fim do Estado Novo ao Golpe de 1964</h3>
+                    <ul>
+                        <li><strong>Redemocratização (1945-46):</strong> Fim do Estado Novo, nova Constituição (1946) e volta da democracia.</li>
+                        <li><strong>Período democrático (1946-1964):</strong> Governos de Dutra, Vargas (1951-54), JK (1956-61), Jânio e Jango.</li>
+                        <li><strong>Crise política:</strong> Instabilidade, reformas de base (Jango), oposição conservadora e crescente polarização.</li>
+                        <li><strong>Golpe civil-militar (1964):</strong> Deposição de João Goulart, com apoio de setores da sociedade, iniciando uma longa ditadura.</li>
+                    </ul>
+                    <p>O período democrático foi breve e marcado por contradições – desenvolvimento econômico e exclusão social.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/hFRlLyd.png" alt="Manifestação de 1964 – tanques na rua ou passeata">
+                    <div class="img-caption">Golpe de 1964 – tanques em frente ao Congresso</div>
+                </div>
+            </div>`,
+
+            // Página 7 – 6.5 Nacionalismo ou desenvolvimentismo
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/7ziZJSL.png" alt="Construção de Brasília ou indústria automobilística">
+                    <div class="img-caption">JK e o desenvolvimentismo – "50 anos em 5"</div>
+                </div>
+                <div class="text-container">
+                    <h3>6.5 Nacionalismo ou desenvolvimentismo</h3>
+                    <p>A partir dos anos 1950, dois projetos econômicos disputaram o país:</p>
+                    <ul>
+                        <li><strong>Nacionalismo:</strong> Defendia o controle estatal dos setores estratégicos (petróleo, energia), com forte presença do Estado na economia.</li>
+                        <li><strong>Desenvolvimentismo:</strong> Buscava a industrialização acelerada, com investimentos estrangeiros e abertura comercial (ex.: Plano de Metas de JK).</li>
+                    </ul>
+                    <p>O debate sobre o papel do Estado vs. mercado perdurou por décadas, influenciando as políticas de governos posteriores, inclusive os militares.</p>
+                </div>
+            </div>`,
+
+            // Página 8 – 6.6 Política de massas e crises institucionais
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>6.6 Política de massas e crises institucionais</h3>
+                    <ul>
+                        <li><strong>Populismo:</strong> Vargas, JK, Jango – buscaram apoio nas classes populares através de discursos, benefícios trabalhistas e obras.</li>
+                        <li><strong>Crises institucionais:</strong> A disputa entre Executivo e Legislativo, e as pressões militares, geraram momentos de paralisia (ex.: crise de 1954, 1961).</li>
+                        <li><strong>Movimentos sociais:</strong> Sindicatos, ligas camponesas, UNE – crescente mobilização que assustou as elites.</li>
+                        <li><strong>Desfecho:</strong> O golpe de 1964 foi uma resposta conservadora à ameaça de reformas estruturais.</li>
+                    </ul>
+                    <p>A política de massas revelou a profunda desigualdade social, mas também a capacidade de organização dos trabalhadores.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/uVEtoXK.png" alt="Comício de Jango ou manifestação popular">
+                    <div class="img-caption">Política de massas – comício pelas reformas</div>
+                </div>
+            </div>`,
+
+            // Página 9 – 6.7 O Regime Civil-Militar
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/4Kx28Lv.png" alt="Atos Institucionais, repressão ou manifestação de 1968">
+                    <div class="img-caption">A Ditadura Militar – repressão e resistência</div>
+                </div>
+                <div class="text-container">
+                    <h3>6.7 O Regime Civil-Militar (1964–1985)</h3>
+                    <ul>
+                        <li><strong>Autoritarismo:</strong> AI-5 (1968) – fechamento do Congresso, censura, prisões e tortura.</li>
+                        <li><strong>"Milagre econômico" (1968–73):</strong> Alto crescimento com endividamento externo e concentração de renda.</li>
+                        <li><strong>Resistência:</strong> Movimento estudantil, guerrilha, sindicalismo e atuação da Igreja (Comissão Justiça e Paz).</li>
+                        <li><strong>Crise e abertura:</strong> O custo social do "milagre" e a pressão internacional levaram a uma lenta abertura (1979-85).</li>
+                    </ul>
+                    <p>O regime deixou um legado de violação de direitos humanos e dívidas não pagas à democracia.</p>
+                </div>
+            </div>`,
+
+            // Página 10 – 6.8 Redemocratização: a "Nova República"
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>6.8 Redemocratização: a "Nova República"</h3>
+                    <ul>
+                        <li><strong>Transição negociada:</strong> Anistia (1979), eleições indiretas (1985) – posse de José Sarney.</li>
+                        <li><strong>Desafios:</strong> Inflação galopante, dívida externa, e a necessidade de refundar as instituições.</li>
+                        <li><strong>Assembleia Constituinte (1987-88):</strong> Participação popular e construção de uma nova ordem democrática.</li>
+                        <li><strong>Primeiros governos civis:</strong> Sarney, Collor, Itamar – tentativas de estabilização e reformas.</li>
+                    </ul>
+                    <p>A Nova República ainda carregava as contradições do regime anterior, mas restabeleceu as liberdades democráticas.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/Jb7jooh.png" alt="Constituinte de 1987 – plenário ou Ulysses Guimarães">
+                    <div class="img-caption">Assembleia Constituinte – marco da redemocratização</div>
+                </div>
+            </div>`,
+
+            // Página 11 – 6.9 A Constituição de 1988
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/cHSAQPC.png" alt="Constituição de 1988 – capa ou artigo">
+                    <div class="img-caption">A Constituição Cidadã – proteção dos direitos fundamentais</div>
+                </div>
+                <div class="text-container">
+                    <h3>6.9 A Constituição de 1988: a promoção e proteção de direitos</h3>
+                    <ul>
+                        <li><strong>Direitos fundamentais:</strong> Amplo catálogo de direitos civis, políticos e sociais – "Constituição Cidadã".</li>
+                        <li><strong>Organização do Estado:</strong> Forte descentralização, autonomia municipal e separação dos poderes.</li>
+                        <li><strong>Direitos trabalhistas e previdenciários:</strong> Consolidados e ampliados.</li>
+                        <li><strong>Mecanismos de proteção:</strong> Ações constitucionais (mandado de segurança, habeas corpus, etc.), Ministério Público e Defensorias.</li>
+                    </ul>
+                    <p>Apesar dos avanços, a efetivação dos direitos esbarra em desigualdades estruturais e na falta de políticas públicas.</p>
+                </div>
+            </div>`,
+
+            // Página 12 – 6.10 Estabilização financeira e política de privatizações
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>6.10 Estabilização financeira e política de privatizações</h3>
+                    <ul>
+                        <li><strong>Planos econômicos:</strong> Cruzado, Collor, Real (1994) – o Plano Real conseguiu controlar a hiperinflação.</li>
+                        <li><strong>Privatizações (anos 1990):</strong> Venda de estatais (telecomunicações, siderurgia, etc.) sob o argumento da eficiência e redução do endividamento.</li>
+                        <li><strong>Consequências:</strong> Maior participação do capital estrangeiro, mas também perda de controle estatal sobre setores estratégicos.</li>
+                        <li><strong>Impacto social:</strong> Ajuste fiscal, desemprego e aumento da informalidade.</li>
+                    </ul>
+                    <p>O Brasil ingressou na era neoliberal, com ganhos pontuais e novos desafios para a soberania nacional.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/E60SEM5.png" alt="Moeda real – plano econômico">
+                    <div class="img-caption">Plano Real – a estabilização da moeda</div>
+                </div>
+            </div>`,
+
+            // Página 13 – 6.11 O Brasil no século XXI
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/GsO7AyK.png" alt="Manifestações sociais ou cartaz sobre desigualdade">
+                    <div class="img-caption">Desigualdades e lutas sociais no século XXI</div>
+                </div>
+                <div class="text-container">
+                    <h3>6.11 O Brasil no século XXI: relações de poder, desigualdades e o legado do patriarcalismo e da escravidão</h3>
+                    <ul>
+                        <li><strong>Desigualdades persistentes:</strong> Brasil é um dos países mais desiguais do mundo – renda, raça, gênero, região.</li>
+                        <li><strong>Legado da escravidão:</strong> Racismo estrutural, exclusão da população negra e indígenas, e baixa mobilidade social.</li>
+                        <li><strong>Patriarcalismo:</strong> Violência de gênero, sub-representação feminina na política e no mercado de trabalho.</li>
+                        <li><strong>Relações de poder:</strong> Concentração de poder político e econômico nas elites, fragilidade das instituições democráticas.</li>
+                        <li><strong>Movimentos sociais:</strong> Lutas por direitos (LGBTQIA+, mulheres, negros, indígenas) ganham visibilidade e pressionam por mudanças.</li>
+                    </ul>
+                    <p>O Brasil do século XXI carrega as marcas de sua história colonial, mas também sementes de transformação e justiça social.</p>
+                </div>
+            </div>`,
+
+            // Página 14 – Fechamento
+            `<div class="congrats-page">
+                <h2>🎉 Parabéns!</h2>
+                <p style="margin-top: 20px;">Você concluiu a leitura sobre a história da República brasileira.</p>
+                <div class="congrats-image">
+                    <img src="https://media.tenor.com/1Gq9HnEJ5wMAAAAM/shih-tzu-shihtzu.gif" alt="Parabéns">
+                </div>
+                <p style="margin-top: 20px;">Isso é Tudo por Hoje!</p>
+            </div>`
+        ];
+
+        const totalPages = pageContents.length;
+        let currentPage = 0;
+        let fontSizeIndex = 4;
+        const fontSizes = [12, 14, 16, 18, 20, 24, 28, 32, 38, 42];
+
+        // Elementos DOM
+        const pageContent = document.getElementById('pageContent');
+        const pageXofY = document.getElementById('pageXofY');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const fontMinus = document.getElementById('fontMinusBtn');
+        const fontPlus = document.getElementById('fontPlusBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const prevBtn = document.getElementById('prevBtnInline');
+        const nextBtn = document.getElementById('nextBtnInline');
+        const speakBtn = document.getElementById('speakBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const rateSelect = document.getElementById('rateSelect');
+
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let isPaused = false;
+        let speechToken = null;
+        let previousActiveSpan = null;
+        let wordSpans = [];
+        let charIndexToSpanMap = [];
+        let currentCharIndex = 0;
+
+        function getFemaleVoice() {
+            const voices = synth.getVoices();
+            const ptVoices = voices.filter(v => v.lang === 'pt-BR');
+            const female = ptVoices.find(v =>
+                v.name.toLowerCase().includes('female') ||
+                v.name.toLowerCase().includes('mulher') ||
+                v.name.includes('Samantha') ||
+                v.name.includes('Maria')
+            );
+            return female || ptVoices[0] || voices[0];
+        }
+
+        function tokenizeTextNodes(root) {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+            const textNodes = [];
+            while (walker.nextNode()) {
+                textNodes.push(walker.currentNode);
+            }
+            textNodes.forEach(node => {
+                const text = node.textContent;
+                if (!text.trim()) return;
+                const fragment = document.createDocumentFragment();
+                const parts = text.split(/(\s+)/);
+                parts.forEach(part => {
+                    if (part.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'speech-word';
+                        span.textContent = part;
+                        fragment.appendChild(span);
+                    } else {
+                        fragment.appendChild(document.createTextNode(part));
+                    }
+                });
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+
+        function buildCharMap() {
+            wordSpans = Array.from(pageContent.querySelectorAll('.speech-word'));
+            charIndexToSpanMap = [];
+            wordSpans.forEach((span, idx) => {
+                const len = span.textContent.length;
+                for (let i = 0; i < len; i++) {
+                    charIndexToSpanMap.push(idx);
+                }
+                if (idx < wordSpans.length - 1) {
+                    charIndexToSpanMap.push(idx);
+                }
+            });
+        }
+
+        function highlightWordSpan(spanIndex) {
+            if (previousActiveSpan !== null && previousActiveSpan !== undefined) {
+                const prevSpan = wordSpans[previousActiveSpan];
+                if (prevSpan) {
+                    prevSpan.classList.remove('active');
+                    prevSpan.classList.remove('upcoming');
+                }
+            }
+            if (spanIndex >= 0 && spanIndex < wordSpans.length) {
+                const currentSpan = wordSpans[spanIndex];
+                currentSpan.classList.add('active');
+                currentSpan.classList.remove('upcoming');
+                previousActiveSpan = spanIndex;
+                currentSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function markUpcoming(spanIndex) {
+            wordSpans.forEach(s => s.classList.remove('upcoming'));
+            for (let i = 1; i <= 3; i++) {
+                const nextIdx = spanIndex + i;
+                if (nextIdx < wordSpans.length) {
+                    wordSpans[nextIdx].classList.add('upcoming');
+                }
+            }
+        }
+
+        function clearAllWordHighlights() {
+            wordSpans.forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('upcoming');
+            });
+            previousActiveSpan = null;
+        }
+
+        function syncHighlightFromCharIndex() {
+            if (currentCharIndex >= charIndexToSpanMap.length) return;
+            const spanIdx = charIndexToSpanMap[currentCharIndex];
+            if (spanIdx !== undefined && spanIdx !== previousActiveSpan) {
+                highlightWordSpan(spanIdx);
+                markUpcoming(spanIdx);
+            }
+        }
+
+        function showPlayingUI() {
+            speakBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            stopBtn.classList.remove('hidden');
+            resumeBtn.classList.add('hidden');
+        }
+
+        function showPausedUI() {
+            pauseBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+            resumeBtn.classList.remove('hidden');
+            speakBtn.classList.add('hidden');
+        }
+
+        function showStoppedUI() {
+            speakBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+            resumeBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+        }
+
+        function startReading() {
+            if (!synth) {
+                alert('Seu navegador não suporta síntese de voz.');
+                return;
+            }
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                isSpeaking = true;
+                showPlayingUI();
+                return;
+            }
+            if (isSpeaking) {
+                stopReading();
+                return;
+            }
+
+            if (pageContent.querySelectorAll('.speech-word').length === 0) {
+                tokenizeTextNodes(pageContent);
+            }
+            buildCharMap();
+            if (wordSpans.length === 0) return;
+
+            const text = wordSpans.map(s => s.textContent).join(' ');
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            const voice = getFemaleVoice();
+            if (voice) currentUtterance.voice = voice;
+            currentUtterance.rate = parseFloat(rateSelect.value);
+
+            const token = Date.now();
+            speechToken = token;
+            currentCharIndex = 0;
+
+            currentUtterance.onboundary = function(event) {
+                if (speechToken !== token) return;
+                if (event.name === 'word') {
+                    currentCharIndex = event.charIndex;
+                    syncHighlightFromCharIndex();
+                }
+            };
+
+            currentUtterance.onstart = function() {
+                if (speechToken !== token) return;
+                isSpeaking = true;
+                isPaused = false;
+                showPlayingUI();
+            };
+
+            currentUtterance.onend = function() {
+                if (speechToken !== token) return;
+                resetSpeechState();
+            };
+
+            currentUtterance.onerror = function(e) {
+                if (speechToken !== token) return;
+                if (e.error !== 'canceled' && e.error !== 'interrupted') {
+                    console.warn('Speech error:', e.error);
+                }
+                resetSpeechState();
+            };
+
+            synth.speak(currentUtterance);
+        }
+
+        function pauseReading() {
+            if (synth && isSpeaking && !isPaused) {
+                synth.pause();
+                isPaused = true;
+                showPausedUI();
+            }
+        }
+
+        function resumeReading() {
+            if (synth && isPaused) {
+                synth.resume();
+                isPaused = false;
+                isSpeaking = true;
+                showPlayingUI();
+            }
+        }
+
+        function stopReading() {
+            if (synth) synth.cancel();
+            resetSpeechState();
+        }
+
+        function resetSpeechState() {
+            if (synth && synth.speaking) synth.cancel();
+            if (currentUtterance) {
+                currentUtterance.onboundary = null;
+                currentUtterance.onstart = null;
+                currentUtterance.onend = null;
+                currentUtterance.onerror = null;
+                currentUtterance = null;
+            }
+            isSpeaking = false;
+            isPaused = false;
+            speechToken = null;
+            currentCharIndex = 0;
+            clearAllWordHighlights();
+            showStoppedUI();
+        }
+
+        function updateUI() {
+            resetSpeechState();
+            pageContent.innerHTML = pageContents[currentPage];
+            const num = currentPage + 1;
+            pageXofY.textContent = `Página ${num} de ${totalPages}`;
+            const pct = (num / totalPages) * 100;
+            progressFill.style.width = pct + '%';
+            progressPercent.textContent = Math.round(pct) + '%';
+            prevBtn.disabled = (currentPage === 0);
+            nextBtn.disabled = (currentPage === totalPages - 1);
+            if (pageContent.scrollTop) pageContent.scrollTop = 0;
+        }
+
+        function applyFontSize() {
+            const size = fontSizes[fontSizeIndex] + 'px';
+            pageContent.style.fontSize = size;
+            fontMinus.disabled = (fontSizeIndex === 0);
+            fontPlus.disabled = (fontSizeIndex === fontSizes.length - 1);
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 0 && newPage < totalPages) {
+                currentPage = newPage;
+                updateUI();
+            }
+        }
+
+        // Event listeners
+        fontMinus.addEventListener('click', () => {
+            if (fontSizeIndex > 0) fontSizeIndex--;
+            applyFontSize();
+        });
+        fontPlus.addEventListener('click', () => {
+            if (fontSizeIndex < fontSizes.length - 1) fontSizeIndex++;
+            applyFontSize();
+        });
+        fullscreenBtn.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        });
+        prevBtn.addEventListener('click', () => changePage(-1));
+        nextBtn.addEventListener('click', () => changePage(1));
+
+        speakBtn.addEventListener('click', startReading);
+        pauseBtn.addEventListener('click', pauseReading);
+        resumeBtn.addEventListener('click', resumeReading);
+        stopBtn.addEventListener('click', stopReading);
+
+        rateSelect.addEventListener('change', () => {
+            if (currentUtterance && isSpeaking && !isPaused) {
+                currentUtterance.rate = parseFloat(rateSelect.value);
+            }
+        });
+
+        // Inicialização
+        applyFontSize();
+        updateUI();
+        if (synth) synth.getVoices();
+    })();
+</script>
+</body>
+</html>
