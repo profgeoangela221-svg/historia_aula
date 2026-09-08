@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>📘 Mundo Moderno</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Verdana', 'Arial', sans-serif;
+            background: #f5f7f6;
+            color: #1a2e2a;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;          /* reduzido para dar mais área */
+            margin: 0;
+        }
+
+        .reader-wrapper {
+            width: 100%;
+            max-width: 100%;        /* agora ocupa toda a largura disponível */
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;    /* um pouco menor */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            padding: 12px 18px;     /* menos padding */
+            border: 1px solid #dde5e0;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .fixed-header {
+            margin-bottom: 10px;
+            border-bottom: 2px solid #dde5e0;
+            padding-bottom: 6px;
+        }
+        .fixed-header h1 {
+            font-size: 1.5rem;      /* ligeiramente menor para caber melhor */
+            font-weight: 700;
+            color: #0f3d2e;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a5e44;
+            margin-bottom: 4px;
+        }
+        .progress-bar-bg {
+            background: #dee6e1;
+            height: 6px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #1a7a58;
+            height: 6px;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.2s;
+        }
+
+        .text-content {
+            text-align: justify;
+            padding: 6px 0 12px;
+            max-height: 75vh;       /* ocupa quase toda a altura da janela */
+            overflow-y: auto;
+            font-size: 18px;
+            line-height: 1.8;
+            margin: 0 2px;
+            scroll-behavior: smooth;
+        }
+        .text-content p { margin-bottom: 0.8em; }
+        .text-content h2, .text-content h3, .text-content h4 {
+            margin: 1em 0 0.3em;
+            color: #154e3a;
+            font-weight: 600;
+        }
+        .text-content ul, .text-content ol {
+            padding-left: 1.8em;
+            margin: 0.4em 0;
+        }
+        .text-content li {
+            margin-bottom: 0.3em;
+        }
+
+        .speech-word {
+            transition: background-color 0.15s ease, color 0.15s ease;
+            border-radius: 3px;
+            padding: 1px 2px;
+            margin: 0 1px;
+        }
+        .speech-word.active {
+            background-color: #ffeb3b;
+            color: #000;
+            font-weight: 600;
+        }
+        .speech-word.upcoming {
+            background-color: #fff9c4;
+        }
+
+        .img-text-row {
+            display: flex;
+            gap: 16px;             /* espaço entre imagem e texto */
+            align-items: flex-start;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .img-container {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+        .img-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .img-caption {
+            font-size: 0.8rem;
+            color: #5a7a6a;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        .text-container {
+            flex: 2;
+            min-width: 180px;
+        }
+        .right-image .text-container { order: 1; }
+        .right-image .img-container { order: 2; }
+        .left-image .text-container { order: 2; }
+        .left-image .img-container { order: 1; }
+
+        .toolbar-single {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            margin: 14px 0 10px;
+            padding: 4px 0 6px;
+            border-top: 1px solid #dde5e0;
+            border-bottom: 1px solid #dde5e0;
+        }
+        .tool-btn {
+            background: #ecf3ef;
+            border: 1px solid #b3cdbf;
+            color: #134531;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 48px;
+            min-width: 50px;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .tool-btn:active { background: #d0e0d7; transform: scale(0.96); }
+        .tool-btn:disabled { opacity: 0.4; background: #e0e8e3; border-color: #b6ccc1; pointer-events: none; }
+        .tool-btn.hidden { display: none; }
+
+        .capa {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .capa h1 { font-size: 32px; margin-bottom: 16px; color: #0f3d2e; }
+        .capa h2 { font-size: 26px; margin-bottom: 30px; color: #1a5e44; }
+        .capa p { font-size: 20px; color: #2a5e4a; }
+
+        .congrats-page {
+            text-align: center;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 40vh;
+        }
+        .congrats-page h2 { color: #1a5e44; margin-bottom: 10px; font-size: 1.8rem; }
+        .congrats-image { text-align: center; margin: 15px auto; }
+        .congrats-image img {
+            transform: scale(1.2);
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .reader-wrapper { 
+                padding: 8px 10px; 
+                border-radius: 16px;
+            }
+            .tool-btn { padding: 6px 8px; min-width: 44px; font-size: 0.85rem; }
+            .img-text-row { flex-direction: column; gap: 10px; }
+            .right-image .text-container, .right-image .img-container,
+            .left-image .text-container, .left-image .img-container { order: unset; }
+            .text-content {
+                max-height: 70vh;
+                font-size: 16px;
+            }
+            .fixed-header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="reader-wrapper">
+    <div id="readerScreen" class="screen active">
+        <div class="fixed-header">
+            <h1>Mundo Moderno · Transformações e Revoluções</h1>
+            <div class="progress-row">
+                <span id="pageXofY">Página 1 de 11</span>
+                <span id="progressPercent">9%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="text-content" id="pageContent"></div>
+        <div class="toolbar-single">
+            <button class="tool-btn" id="fontMinusBtn" title="Diminuir fonte">A−</button>
+            <button class="tool-btn" id="fontPlusBtn" title="Aumentar fonte">A+</button>
+            <button class="tool-btn" id="fullscreenBtn" title="Tela cheia">⛶</button>
+            <button class="tool-btn" id="prevBtnInline" title="Página anterior">◀</button>
+            <button class="tool-btn" id="nextBtnInline" title="Próxima página">▶</button>
+            <button class="tool-btn" id="speakBtn" title="Ouvir">🔊</button>
+            <button class="tool-btn hidden" id="pauseBtn" title="Pausar">⏸️</button>
+            <button class="tool-btn hidden" id="resumeBtn" title="Retomar">▶️</button>
+            <button class="tool-btn hidden" id="stopBtn" title="Parar">⏹️</button>
+            <select id="rateSelect" class="tool-btn" style="width: auto; background: #ecf3ef; border: 1px solid #b3cdbf; padding: 8px 12px;">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ============ CONTEÚDO DAS PÁGINAS ============
+        const pageContents = [
+            // Página 1 – Capa
+            `<div class="capa">
+                <h1>🌍 Mundo Moderno</h1>
+                <h2>Transformações e Revoluções</h2>
+                <p>Professora Angela Siqueira</p>
+            </div>`,
+            // Página 2 – Índice
+            `<div class="text-container" style="max-width:100%;">
+                <h3>📌 ÍNDICE</h3>
+                <ol>
+                    <li>3.1 – Renascimento Cultural – Pág. 3</li>
+                    <li>3.2 – Formação dos Estados modernos – Pág. 4</li>
+                    <li>3.3 – Expansão marítima e espaço atlântico – Pág. 5</li>
+                    <li>3.4 – Mercantilismo e colonização – Pág. 6</li>
+                    <li>3.5 – Antigo Regime – Pág. 7</li>
+                    <li>3.6 – Iluminismo e Liberalismo – Pág. 8</li>
+                    <li>3.7 – Do artesanato à fábrica – Pág. 9</li>
+                    <li>3.8 – Revolução Industrial – Pág. 10</li>
+                </ol>
+            </div>`,
+            // Página 3 – Renascimento Cultural
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>3.1 Renascimento Cultural</h3>
+                    <p><strong>Contexto:</strong> Movimento artístico, científico e filosófico que surgiu na Itália (séc. XIV) e se espalhou pela Europa (séc. XV-XVI). Valorizava a razão, a natureza e o ser humano (<em>humanismo</em>).</p>
+                    <ul>
+                        <li><strong>Arte:</strong> Perspectiva, realismo, temas mitológicos e religiosos. Artistas como Leonardo da Vinci, Michelangelo, Rafael.</li>
+                        <li><strong>Ciência:</strong> Método experimental, astronomia (Copérnico, Galileu), anatomia.</li>
+                        <li><strong>Política:</strong> Maquiavel – "O Príncipe" (realismo político).</li>
+                        <li><strong>Invenções:</strong> Imprensa (Gutenberg) – difusão do conhecimento.</li>
+                    </ul>
+                    <p><em>O Renascimento rompeu com a mentalidade medieval e abriu caminho para a modernidade.</em></p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/yJFzRxw.png" alt="Imagem renascentista – Homem Vitruviano ou Escola de Atenas">
+                    <div class="img-caption">O homem no centro do universo – Renascimento</div>
+                </div>
+            </div>`,
+            // Página 4 – Formação dos Estados modernos
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/Ch48S7r.png" alt="Imagem do Estado Absolutista – Luís XIV">
+                    <div class="img-caption">O Estado absolutista – Luís XIV, o "Rei Sol"</div>
+                </div>
+                <div class="text-container">
+                    <h3>3.2 Formação dos Estados modernos</h3>
+                    <p><strong>Processo de centralização política</strong> – monarcas concentraram poder, criaram exércitos nacionais, burocracia e sistema tributário.</p>
+                    <ul>
+                        <li><strong>Absolutismo:</strong> Rei como autoridade máxima (ex.: França de Luís XIV).</li>
+                        <li><strong>Parlamentarismo:</strong> Inglaterra – limitação do poder real (Revolução Gloriosa, 1688).</li>
+                        <li><strong>Diplomacia:</strong> Paz de Westfália (1648) – consolidação do sistema de Estados-nação.</li>
+                    </ul>
+                </div>
+            </div>`,
+            // Página 5 – Expansão marítima
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>3.3 Expansão marítima e constituição do espaço atlântico</h3>
+                    <p><strong>Motivações:</strong> Busca por metais preciosos, especiarias, difusão da fé cristã e rotas alternativas para o Oriente.</p>
+                    <ul>
+                        <li><strong>Portugal:</strong> Chegada à Índia (Vasco da Gama, 1498) e ao Brasil (1500).</li>
+                        <li><strong>Espanha:</strong> Colombo chega à América (1492).</li>
+                        <li><strong>Consequências:</strong> Integração do Atlântico – comércio triangular (Europa-África-Américas), escravidão, colonização.</li>
+                    </ul>
+                    <p>O <strong>espaço atlântico</strong> tornou-se o eixo do comércio mundial entre os séculos XVI e XVIII.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/URzwnQa.png" alt="Mapa das rotas marítimas – século XV-XVI">
+                    <div class="img-caption">Rotas do comércio atlântico</div>
+                </div>
+            </div>`,
+            // Página 6 – Mercantilismo e colonização
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/Dz0D4C7.png" alt="Imagem de feitoria ou comércio triangular">
+                    <div class="img-caption">Comércio triangular e feitorias</div>
+                </div>
+                <div class="text-container">
+                    <h3>3.4 Mercantilismo e colonização</h3>
+                    <p><strong>Mercantilismo:</strong> Conjunto de práticas econômicas (séc. XVI-XVIII) que visavam o enriquecimento do Estado.</p>
+                    <ul>
+                        <li><strong>Metalismo:</strong> Acumular metais preciosos.</li>
+                        <li><strong>Balança comercial favorável:</strong> Exportar mais que importar.</li>
+                        <li><strong>Protecionismo:</strong> Taxas e monopólios para proteger a indústria nacional.</li>
+                        <li><strong>Colonialismo:</strong> Exploração de colônias como fornecedoras de matérias-primas e mercado consumidor.</li>
+                    </ul>
+                    <p>O <strong>pacto colonial</strong> restringia o comércio das colônias à metrópole.</p>
+                </div>
+            </div>`,
+            // Página 7 – Antigo Regime
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>3.5 Antigo Regime</h3>
+                    <p>Sociedade estamental, economia agrária e poder absoluto do rei. <strong>Estamentos:</strong></p>
+                    <ul>
+                        <li><strong>Primeiro Estado:</strong> Clero.</li>
+                        <li><strong>Segundo Estado:</strong> Nobreza.</li>
+                        <li><strong>Terceiro Estado:</strong> Povo (burguesia, camponeses, artesãos).</li>
+                    </ul>
+                    <p>Os dois primeiros tinham privilégios (isenção de impostos, cargos hereditários). O povo sustentava a máquina estatal e sofria com a carestia e a falta de representação política.</p>
+                    <p>A <strong>crítica ao Antigo Regime</strong> foi o motor do Iluminismo e das revoluções liberais.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/85iPmeW.png" alt="Palácio de Versalhes – símbolo do Antigo Regime">
+                    <div class="img-caption">Versalhes – esplendor e poder do Antigo Regime</div>
+                </div>
+            </div>`,
+            // Página 8 – Iluminismo e Liberalismo
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/eQ1ufCp.png" alt="Imagem do Iluminismo – Enciclopédia ou filósofos">
+                    <div class="img-caption">A razão iluminista – o saber como ferramenta de transformação</div>
+                </div>
+                <div class="text-container">
+                    <h3>3.6 Iluminismo e Liberalismo</h3>
+                    <p><strong>Iluminismo (séc. XVIII):</strong> Movimento intelectual que defendia a razão, a liberdade e a igualdade jurídica.</p>
+                    <ul>
+                        <li><strong>John Locke:</strong> Direitos naturais (vida, liberdade, propriedade).</li>
+                        <li><strong>Montesquieu:</strong> Separação dos poderes (Executivo, Legislativo, Judiciário).</li>
+                        <li><strong>Voltaire:</strong> Tolerância religiosa e liberdade de expressão.</li>
+                        <li><strong>Rousseau:</strong> "O Contrato Social" – soberania popular.</li>
+                    </ul>
+                    <p><strong>Liberalismo:</strong> Baseado na defesa da propriedade privada, livre mercado e limitação do poder estatal. Inspirou revoluções (EUA, França).</p>
+                </div>
+            </div>`,
+            // Página 9 – Do artesanato à fábrica
+            `<div class="img-text-row right-image">
+                <div class="text-container">
+                    <h3>3.7 Do artesanato à fábrica</h3>
+                    <p><strong>Artesanato:</strong> Produção manual, geralmente familiar ou em pequenas oficinas. Ferramentas simples e ritmo individual.</p>
+                    <ul>
+                        <li><strong>Manufatura:</strong> Divisão do trabalho, maior produção, mas ainda com ferramentas manuais.</li>
+                        <li><strong>Maquinofatura:</strong> Uso de máquinas (movidas a água e depois a vapor).</li>
+                    </ul>
+                    <p>O <strong>sistema fabril</strong> concentrou trabalhadores em grandes unidades produtivas, com jornadas longas e condições precárias. A <strong>revolução nos transportes</strong> (estradas de ferro, navios a vapor) integrou mercados.</p>
+                </div>
+                <div class="img-container">
+                    <img src="https://i.imgur.com/T8NQchH.png" alt="Oficina artesanal e máquina a vapor">
+                    <div class="img-caption">Do trabalho manual à máquina</div>
+                </div>
+            </div>`,
+            // Página 10 – Revolução Industrial
+            `<div class="img-text-row left-image">
+                <div class="img-container">
+                    <img src="https://i.imgur.com/zTkFcwD.png" alt="Revolução Industrial – fábrica e máquina a vapor">
+                    <div class="img-caption">A Revolução Industrial transformou a paisagem e a sociedade</div>
+                </div>
+                <div class="text-container">
+                    <h3>3.8 Revolução Industrial</h3>
+                    <p><strong>Revolução Industrial (séc. XVIII-XIX):</strong> Transformação radical dos processos produtivos, com a substituição da força humana e animal por máquinas movidas a combustíveis (carvão, petróleo).</p>
+                    <ul>
+                        <li><strong>1ª Fase (Inglaterra):</strong> Têxtil, siderurgia, máquina a vapor (Watt).</li>
+                        <li><strong>2ª Fase (séc. XIX):</strong> Eletricidade, petróleo, indústria química.</li>
+                    </ul>
+                    <p><strong>Consequências:</strong> Crescimento urbano, êxodo rural, novas classes sociais (burguesia industrial e proletariado), movimentos operários (sindicalismo, socialismo).</p>
+                    <p>A Revolução Industrial consolidou o capitalismo e redefiniu as relações de trabalho em escala global.</p>
+                </div>
+            </div>`,
+            // Página 11 – Fechamento (Parabéns)
+            `<div class="congrats-page">
+                <h2>🎉 Parabéns!</h2>
+                <p style="margin-top: 20px;">Você concluiu a leitura sobre o Mundo Moderno.</p>
+                <div class="congrats-image">
+                    <img src="https://media.tenor.com/1Gq9HnEJ5wMAAAAM/shih-tzu-shihtzu.gif" alt="Parabéns">
+                </div>
+                <p style="margin-top: 20px;">Isso é Tudo por Hoje!</p>
+            </div>`
+        ];
+
+        const totalPages = pageContents.length;
+        let currentPage = 0;
+        let fontSizeIndex = 4;
+        const fontSizes = [12, 14, 16, 18, 20, 24, 28, 32, 38, 42];
+
+        const pageContent = document.getElementById('pageContent');
+        const pageXofY = document.getElementById('pageXofY');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const fontMinus = document.getElementById('fontMinusBtn');
+        const fontPlus = document.getElementById('fontPlusBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const prevBtn = document.getElementById('prevBtnInline');
+        const nextBtn = document.getElementById('nextBtnInline');
+        const speakBtn = document.getElementById('speakBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const rateSelect = document.getElementById('rateSelect');
+
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let isPaused = false;
+        let speechToken = null;
+        let previousActiveSpan = null;
+        let wordSpans = [];
+        let charIndexToSpanMap = [];
+        let currentCharIndex = 0;
+
+        function getFemaleVoice() {
+            const voices = synth.getVoices();
+            const ptVoices = voices.filter(v => v.lang === 'pt-BR');
+            const female = ptVoices.find(v =>
+                v.name.toLowerCase().includes('female') ||
+                v.name.toLowerCase().includes('mulher') ||
+                v.name.includes('Samantha') ||
+                v.name.includes('Maria')
+            );
+            return female || ptVoices[0] || voices[0];
+        }
+
+        function tokenizeTextNodes(root) {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+            const textNodes = [];
+            while (walker.nextNode()) {
+                textNodes.push(walker.currentNode);
+            }
+            textNodes.forEach(node => {
+                const text = node.textContent;
+                if (!text.trim()) return;
+                const fragment = document.createDocumentFragment();
+                const parts = text.split(/(\s+)/);
+                parts.forEach(part => {
+                    if (part.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'speech-word';
+                        span.textContent = part;
+                        fragment.appendChild(span);
+                    } else {
+                        fragment.appendChild(document.createTextNode(part));
+                    }
+                });
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+
+        function buildCharMap() {
+            wordSpans = Array.from(pageContent.querySelectorAll('.speech-word'));
+            charIndexToSpanMap = [];
+            wordSpans.forEach((span, idx) => {
+                const len = span.textContent.length;
+                for (let i = 0; i < len; i++) {
+                    charIndexToSpanMap.push(idx);
+                }
+                if (idx < wordSpans.length - 1) {
+                    charIndexToSpanMap.push(idx);
+                }
+            });
+        }
+
+        function highlightWordSpan(spanIndex) {
+            if (previousActiveSpan !== null && previousActiveSpan !== undefined) {
+                const prevSpan = wordSpans[previousActiveSpan];
+                if (prevSpan) {
+                    prevSpan.classList.remove('active');
+                    prevSpan.classList.remove('upcoming');
+                }
+            }
+            if (spanIndex >= 0 && spanIndex < wordSpans.length) {
+                const currentSpan = wordSpans[spanIndex];
+                currentSpan.classList.add('active');
+                currentSpan.classList.remove('upcoming');
+                previousActiveSpan = spanIndex;
+                currentSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function markUpcoming(spanIndex) {
+            wordSpans.forEach(s => s.classList.remove('upcoming'));
+            for (let i = 1; i <= 3; i++) {
+                const nextIdx = spanIndex + i;
+                if (nextIdx < wordSpans.length) {
+                    wordSpans[nextIdx].classList.add('upcoming');
+                }
+            }
+        }
+
+        function clearAllWordHighlights() {
+            wordSpans.forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('upcoming');
+            });
+            previousActiveSpan = null;
+        }
+
+        function syncHighlightFromCharIndex() {
+            if (currentCharIndex >= charIndexToSpanMap.length) return;
+            const spanIdx = charIndexToSpanMap[currentCharIndex];
+            if (spanIdx !== undefined && spanIdx !== previousActiveSpan) {
+                highlightWordSpan(spanIdx);
+                markUpcoming(spanIdx);
+            }
+        }
+
+        function showPlayingUI() {
+            speakBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            stopBtn.classList.remove('hidden');
+            resumeBtn.classList.add('hidden');
+        }
+
+        function showPausedUI() {
+            pauseBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+            resumeBtn.classList.remove('hidden');
+            speakBtn.classList.add('hidden');
+        }
+
+        function showStoppedUI() {
+            speakBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+            resumeBtn.classList.add('hidden');
+            stopBtn.classList.add('hidden');
+        }
+
+        function startReading() {
+            if (!synth) {
+                alert('Seu navegador não suporta síntese de voz.');
+                return;
+            }
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                isSpeaking = true;
+                showPlayingUI();
+                return;
+            }
+            if (isSpeaking) {
+                stopReading();
+                return;
+            }
+
+            if (pageContent.querySelectorAll('.speech-word').length === 0) {
+                tokenizeTextNodes(pageContent);
+            }
+            buildCharMap();
+            if (wordSpans.length === 0) return;
+
+            const text = wordSpans.map(s => s.textContent).join(' ');
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            const voice = getFemaleVoice();
+            if (voice) currentUtterance.voice = voice;
+            currentUtterance.rate = parseFloat(rateSelect.value);
+
+            const token = Date.now();
+            speechToken = token;
+            currentCharIndex = 0;
+
+            currentUtterance.onboundary = function(event) {
+                if (speechToken !== token) return;
+                if (event.name === 'word') {
+                    currentCharIndex = event.charIndex;
+                    syncHighlightFromCharIndex();
+                }
+            };
+
+            currentUtterance.onstart = function() {
+                if (speechToken !== token) return;
+                isSpeaking = true;
+                isPaused = false;
+                showPlayingUI();
+            };
+
+            currentUtterance.onend = function() {
+                if (speechToken !== token) return;
+                resetSpeechState();
+            };
+
+            currentUtterance.onerror = function(e) {
+                if (speechToken !== token) return;
+                if (e.error !== 'canceled' && e.error !== 'interrupted') {
+                    console.warn('Speech error:', e.error);
+                }
+                resetSpeechState();
+            };
+
+            synth.speak(currentUtterance);
+        }
+
+        function pauseReading() {
+            if (synth && isSpeaking && !isPaused) {
+                synth.pause();
+                isPaused = true;
+                showPausedUI();
+            }
+        }
+
+        function resumeReading() {
+            if (synth && isPaused) {
+                synth.resume();
+                isPaused = false;
+                isSpeaking = true;
+                showPlayingUI();
+            }
+        }
+
+        function stopReading() {
+            if (synth) synth.cancel();
+            resetSpeechState();
+        }
+
+        function resetSpeechState() {
+            if (synth && synth.speaking) synth.cancel();
+            if (currentUtterance) {
+                currentUtterance.onboundary = null;
+                currentUtterance.onstart = null;
+                currentUtterance.onend = null;
+                currentUtterance.onerror = null;
+                currentUtterance = null;
+            }
+            isSpeaking = false;
+            isPaused = false;
+            speechToken = null;
+            currentCharIndex = 0;
+            clearAllWordHighlights();
+            showStoppedUI();
+        }
+
+        function updateUI() {
+            resetSpeechState();
+            pageContent.innerHTML = pageContents[currentPage];
+            const num = currentPage + 1;
+            pageXofY.textContent = `Página ${num} de ${totalPages}`;
+            const pct = (num / totalPages) * 100;
+            progressFill.style.width = pct + '%';
+            progressPercent.textContent = Math.round(pct) + '%';
+            prevBtn.disabled = (currentPage === 0);
+            nextBtn.disabled = (currentPage === totalPages - 1);
+            if (pageContent.scrollTop) pageContent.scrollTop = 0;
+        }
+
+        function applyFontSize() {
+            const size = fontSizes[fontSizeIndex] + 'px';
+            pageContent.style.fontSize = size;
+            fontMinus.disabled = (fontSizeIndex === 0);
+            fontPlus.disabled = (fontSizeIndex === fontSizes.length - 1);
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 0 && newPage < totalPages) {
+                currentPage = newPage;
+                updateUI();
+            }
+        }
+
+        fontMinus.addEventListener('click', () => {
+            if (fontSizeIndex > 0) fontSizeIndex--;
+            applyFontSize();
+        });
+        fontPlus.addEventListener('click', () => {
+            if (fontSizeIndex < fontSizes.length - 1) fontSizeIndex++;
+            applyFontSize();
+        });
+        fullscreenBtn.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        });
+        prevBtn.addEventListener('click', () => changePage(-1));
+        nextBtn.addEventListener('click', () => changePage(1));
+
+        speakBtn.addEventListener('click', startReading);
+        pauseBtn.addEventListener('click', pauseReading);
+        resumeBtn.addEventListener('click', resumeReading);
+        stopBtn.addEventListener('click', stopReading);
+
+        rateSelect.addEventListener('change', () => {
+            if (currentUtterance && isSpeaking && !isPaused) {
+                currentUtterance.rate = parseFloat(rateSelect.value);
+            }
+        });
+
+        applyFontSize();
+        updateUI();
+        if (synth) synth.getVoices();
+    })();
+</script>
+</body>
+</html>
