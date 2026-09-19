@@ -3,244 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Quiz · Bloco 1 · Mundo Moderno</title>
+    <title>Quiz · Mundo Moderno · História</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Verdana', 'Arial', sans-serif; background: #f5f7f6; color: #1a2e2a; line-height: 1.4; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 12px; }
-        .quiz-wrapper { width: 100%; max-width: 85%; margin: 0 auto; background: white; border-radius: 28px; box-shadow: 0 12px 28px rgba(0,0,0,0.04); padding: 20px 30px; border: 1px solid #dde5e0; }
-        .screen { display: none; } .screen.active { display: block; }
-        .intro-card { text-align: center; }
-        .intro-card h1 { font-size: 2.2rem; font-weight: 700; color: #0f3d2e; margin-bottom: 20px; }
-        .intro-card .revisao { font-size: 1.4rem; color: #2a5e4a; margin-bottom: 12px; font-weight: 600; }
-        .intro-card .professora { font-size: 1.2rem; color: #1a5e44; margin-bottom: 40px; font-style: italic; }
-        .intro-card .btn-iniciar { background: #1a5e44; color: white; border: none; padding: 18px 40px; font-size: 1.4rem; font-weight: bold; border-radius: 60px; cursor: pointer; margin-top: 20px; transition: transform 0.2s; }
-        .intro-card .btn-iniciar:hover { background: #0f4a35; transform: scale(1.02); }
-        .title { font-size: 1.7rem; font-weight: 700; color: #0f3d2e; margin-bottom: 8px; text-align: center; }
-        .sub { text-align: center; color: #2a5e4a; margin-bottom: 20px; font-style: italic; }
-        .progress-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: #1a5e44; margin-bottom: 8px; }
-        .progress-bar-bg { background: #dee6e1; height: 8px; border-radius: 20px; overflow: hidden; margin-bottom: 20px; }
-        .progress-fill { background: #1a7a58; height: 8px; width: 0%; border-radius: 20px; transition: width 0.2s; }
-        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; line-height: 1.5; text-align: center; background: #f0f7f3; padding: 20px; border-radius: 20px; }
-        .options { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
-        .opt-btn { background: #ecf3ef; border: 2px solid #b3cdbf; padding: 14px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 60px; cursor: pointer; transition: 0.1s; text-align: center; min-width: 150px; font-family: inherit; }
-        .opt-btn:hover { background: #dce8e0; transform: scale(1.02); }
-        .opt-btn.selected-true { background: #1a5e44; color: white; border-color: #1a5e44; }
-        .opt-btn.selected-false { background: #1a5e44; color: white; border-color: #1a5e44; }
-        .opt-btn.correct-show { background: #28a745; color: white; border-color: #28a745; }
-        .opt-btn.wrong-show { background: #dc3545; color: white; border-color: #dc3545; }
-        .feedback { margin-top: 20px; padding: 15px; border-radius: 20px; font-size: 0.95rem; line-height: 1.4; }
+        body {
+            font-family: 'Verdana', 'Arial', sans-serif;
+            background: #e8e2d4;
+            color: #2c3e2f;
+            line-height: 1.4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            margin: 0;
+        }
+        .quiz-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fffaf2;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 14px 20px;
+            border: 1px solid #d4c9b5;
+        }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4a6b3c;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .sub {
+            text-align: center;
+            color: #6b5e4a;
+            margin-bottom: 16px;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            line-height: 1.5;
+            color: #2c3e2f;
+        }
+        .question-image {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .question-image img {
+            max-width: 100%;
+            max-height: 260px;
+            border-radius: 12px;
+            border: 1px solid #d4c9b5;
+        }
+        .question-image .img-caption {
+            font-size: 0.85rem;
+            color: #6b5e4a;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        .options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .opt-btn {
+            background: #e8e2d4;
+            border: 1px solid #c2b59b;
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 48px;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #2c3e2f;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        .opt-btn.selected {
+            background: #4a6b3c;
+            color: #fffaf2;
+            border-color: #4a6b3c;
+        }
+        .feedback {
+            margin-top: 18px;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+        }
         .feedback.correct { background: #d4edda; border-left: 6px solid #28a745; }
         .feedback.wrong { background: #f8d7da; border-left: 6px solid #dc3545; }
-        .hidden { display: none; }
-        .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 20px 0 10px; padding-top: 15px; border-top: 1px solid #dde5e0; }
-        .tool-btn { background: #ecf3ef; border: 1px solid #b3cdbf; padding: 10px 18px; font-size: 1rem; font-weight: 600; border-radius: 48px; cursor: pointer; transition: 0.1s; font-family: inherit; }
-        .tool-btn:hover { background: #dce8e0; }
-        .tool-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 16px 0 8px;
+        }
+        .tool-btn {
+            background: #e8e2d4;
+            border: 1px solid #c2b59b;
+            padding: 10px 12px;
+            font-size: 1rem;
+            border-radius: 48px;
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            color: #2c3e2f;
+            font-weight: 600;
+        }
+        .tool-btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .progress {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: #4a6b3c;
+            text-align: right;
+        }
+        .font-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            justify-content: flex-end;
+        }
+        .font-btn {
+            background: #ddd0bc;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2c3e2f;
+            font-size: 0.9rem;
+        }
         .result-screen { text-align: center; }
-        .result-box { background: #f0f7f3; padding: 25px; border-radius: 28px; margin: 20px 0; }
-        .restart-btn { background: #1a5e44; color: white; border: none; padding: 16px 24px; border-radius: 60px; width: 100%; cursor: pointer; margin-top: 10px; font-size: 1.2rem; font-weight: bold; }
+        .result-box {
+            background: #f5efe5;
+            padding: 20px;
+            border-radius: 28px;
+            margin: 20px 0;
+        }
+        .restart-btn {
+            background: #4a6b3c;
+            color: #fffaf2;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .end-btn {
+            background: #b36b3c;
+            color: #fffaf2;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
         .stats { font-size: 1.1rem; line-height: 1.8; }
-        hr { margin: 15px 0; border-color: #c0d9ce; }
-        @media (max-width: 640px) { .quiz-wrapper { max-width: 100%; padding: 15px; } .opt-btn { padding: 10px 20px; min-width: 120px; font-size: 1rem; } .toolbar { gap: 8px; } .tool-btn { padding: 8px 14px; font-size: 0.85rem; } .question-text { font-size: 1rem; padding: 15px; } }
+
+        /* ---- Página em branco (tela de encerramento) ---- */
+        .blank-page {
+            min-height: 72vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            background: #fffaf2;
+            border-radius: 20px;
+        }
+
+        .capa {
+            text-align: center;
+            padding: 30px 16px;
+        }
+        .capa h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: #4a6b3c;
+        }
+        .capa h2 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            color: #b36b3c;
+        }
+        .capa .subtitulo {
+            font-size: 18px;
+            color: #6b5e4a;
+            margin-bottom: 8px;
+        }
+        .capa .autora {
+            font-size: 17px;
+            color: #8b7a5e;
+            margin-top: 24px;
+            font-style: italic;
+        }
+        .capa .info-quiz {
+            font-size: 15px;
+            color: #9b8a6e;
+            margin-top: 30px;
+            border-top: 1px solid #d4c9b5;
+            padding-top: 20px;
+        }
+        .start-btn {
+            background: #4a6b3c;
+            color: #fffaf2;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 22px;
+            font-weight: bold;
+        }
+        .start-btn:hover { background: #3d5a32; }
+
+        @media (max-width: 640px) {
+            .quiz-wrapper { padding: 12px 14px; border-radius: 18px; }
+            .opt-btn { padding: 10px 16px; font-size: 1rem; min-width: 80px; }
+            .capa h1 { font-size: 26px; }
+            .capa h2 { font-size: 20px; }
+            .title { font-size: 1.3rem; }
+            .question-text { font-size: 1.05rem; }
+            .blank-page { min-height: 65vh; }
+        }
     </style>
 </head>
 <body>
 <div class="quiz-wrapper">
-    <div id="introScreen" class="screen active intro-card">
-        <h1>🌍 Mundo Moderno</h1>
-        <div class="revisao">Quiz · Bloco 1 · 23 questões</div>
-        <div class="professora">Professora Angela Siqueira</div>
-        <button class="btn-iniciar" id="startQuizBtn">▶ Iniciar Quiz</button>
+    <!-- TELA DE CAPA -->
+    <div id="capaScreen" class="screen active">
+        <div class="capa">
+            <h1>📝 Quiz de História</h1>
+            <h2>Mundo Moderno</h2>
+            <p class="subtitulo">Transformações e Revoluções – 1453 a 1789</p>
+            <p class="autora">Professora Angela Siqueira</p>
+            <p class="info-quiz">25 afirmações para julgar VERDADEIRO ou FALSO</p>
+            <button class="start-btn" id="startQuizBtn">▶ Iniciar Quiz</button>
+        </div>
     </div>
 
+    <!-- TELA DO QUIZ -->
     <div id="quizScreen" class="screen">
-        <div class="title">🎯 Verdadeiro ou Falso?</div>
-        <div class="sub">Renascimento · Estados Modernos · Expansão · Mercantilismo · Antigo Regime · Iluminismo · Revolução Industrial</div>
-        <div class="progress-row">
-            <span id="progressText">Questão 1 de 23</span>
-            <span id="scoreDisplay">✅ 0 acertos</span>
+        <div class="font-controls">
+            <button class="font-btn" id="fontMinus">A−</button>
+            <button class="font-btn" id="fontPlus">A+</button>
+            <button class="font-btn" id="fullscreenBtn">⛶ Tela cheia</button>
         </div>
-        <div class="progress-bar-bg"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
+        <div class="title">🌍 Mundo Moderno</div>
+        <div class="sub">25 afirmações – responda com Verdadeiro ou Falso</div>
+        <div class="progress" id="progressText">Questão 1 de 25</div>
         <div id="questionArea">
-            <div id="questionText" class="question-text"></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="question-image" id="questionImage" style="display: none;"></div>
             <div class="options" id="optionsArea">
-                <button class="opt-btn" id="trueBtn">✅ VERDADEIRO</button>
-                <button class="opt-btn" id="falseBtn">❌ FALSO</button>
+                <button class="opt-btn" data-value="true">✅ Verdadeiro</button>
+                <button class="opt-btn" data-value="false">❌ Falso</button>
             </div>
-            <div id="feedbackArea" class="feedback hidden"></div>
+            <div class="feedback" id="feedbackArea"></div>
         </div>
         <div class="toolbar">
-            <button class="tool-btn" id="fontMinusBtn">A−</button>
-            <button class="tool-btn" id="fontPlusBtn">A+</button>
-            <button class="tool-btn" id="fullscreenBtn">⛶ Tela cheia</button>
             <button class="tool-btn" id="prevBtn" disabled>◀ Anterior</button>
             <button class="tool-btn" id="nextBtn" disabled>Próxima ▶</button>
         </div>
     </div>
 
+    <!-- TELA DE RESULTADO -->
     <div id="resultScreen" class="screen result-screen">
         <h2>📊 Estatística da sua pontuação</h2>
         <div class="result-box" id="resultContent"></div>
         <button class="restart-btn" id="restartQuizBtn">🔄 Refazer quiz</button>
+        <button class="end-btn" id="endQuizBtn">⏹ Encerrar</button>
+    </div>
+
+    <!-- TELA FINAL (PÁGINA EM BRANCO) -->
+    <div id="endScreen" class="screen">
+        <div class="blank-page">
+            <button class="restart-btn" id="restartFromEndBtn">🔄 Refazer quiz</button>
+        </div>
     </div>
 </div>
 
 <script>
+    // ============================================================
+    // QUESTÕES – baseadas no PDF "Mundo Moderno"
+    // ============================================================
     const questions = [
-        { text: "O Renascimento valorizou o antropocentrismo em oposição ao teocentrismo medieval.", answer: true, justification: "O Renascimento colocou o ser humano no centro das reflexões (antropocentrismo), rompendo com a visão teocêntrica da Idade Média." },
-        { text: "O Renascimento teve início na França e depois se espalhou para a Itália.", answer: false, justification: "O Renascimento teve seu berço na Itália (Florença, Veneza, Roma), espalhando-se depois para o resto da Europa." },
-        { text: "O mecenato foi fundamental para o desenvolvimento das artes renascentistas.", answer: true, justification: "A burguesia e a nobreza financiavam artistas, impulsionando a produção cultural." },
-        { text: "Galileu foi condenado por defender o geocentrismo.", answer: false, justification: "Galileu foi condenado por defender o heliocentrismo (Sol no centro), que contrariava a doutrina da Igreja." },
-        { text: "A formação dos Estados Modernos contou com a aliança entre reis e burguesia.", answer: true, justification: "Os reis centralizaram o poder com o apoio da burguesia, que fornecia recursos financeiros." },
-        { text: "Na Inglaterra, o absolutismo foi a forma predominante de governo.", answer: false, justification: "A Inglaterra desenvolveu uma monarquia limitada, com o Parlamento tendo poderes crescentes." },
-        { text: "Jean Bodin defendeu o absolutismo e a soberania indivisível do rei.", answer: true, justification: "Bodin defendia que a soberania do rei é absoluta e indivisível, base teórica do absolutismo." },
-        { text: "A expansão marítima foi impulsionada pela busca por especiarias, ouro e pela expansão do cristianismo.", answer: true, justification: "Comércio, religião e política foram os motores da expansão marítima europeia." },
-        { text: "O Tratado de Tordesilhas (1494) dividiu as terras descobertas entre França e Inglaterra.", answer: false, justification: "O Tratado dividiu as terras entre Portugal e Espanha, mediado pelo Papa." },
-        { text: "O comércio triangular envolvia Europa (manufaturados), África (escravos) e América (matérias-primas).", answer: true, justification: "Essa rota interligava os três continentes e foi base da economia colonial." },
-        { text: "O mercantilismo defendia o metalismo e a balança comercial favorável.", answer: true, justification: "Metalismo (acumular ouro/prata) e balança comercial favorável (exportar > importar) eram princípios centrais." },
-        { text: "O pacto colonial permitia que as colônias comercializassem livremente.", answer: false, justification: "O pacto colonial estabelecia que a colônia só podia comercializar com a metrópole." },
-        { text: "O colbertismo, na França, dava ênfase ao desenvolvimento da indústria nacional.", answer: true, justification: "Colbert incentivou a indústria francesa e o comércio interno, uma variação do mercantilismo." },
-        { text: "A sociedade do Antigo Regime era estamental: clero, nobreza e terceiro estado.", answer: true, justification: "A divisão em três estados era a base da sociedade, com privilégios para os dois primeiros." },
-        { text: "A burguesia pertencia ao Primeiro Estado e gozava de privilégios fiscais.", answer: false, justification: "A burguesia fazia parte do Terceiro Estado, pagava impostos e não tinha privilégios." },
-        { text: "A arte barroca foi usada pela Igreja como ferramenta da Contrarreforma.", answer: true, justification: "A arte barroca, grandiosa e dramática, foi estratégia da Igreja na Contrarreforma." },
-        { text: "O Iluminismo defendia a razão, a liberdade e a igualdade, criticando o absolutismo.", answer: true, justification: "Os iluministas acreditavam que a razão poderia melhorar a sociedade, combatendo o absolutismo." },
-        { text: "John Locke defendeu o absolutismo monárquico.", answer: false, justification: "Locke defendeu direitos naturais e governo limitado, influenciando o liberalismo." },
-        { text: "Montesquieu propôs a tripartição dos poderes para limitar o Estado.", answer: true, justification: "Montesquieu, em 'O Espírito das Leis', defendeu a separação dos poderes." },
-        { text: "A Revolução Industrial teve início na Inglaterra no final do século XVIII.", answer: true, justification: "A Inglaterra foi pioneira, com a mecanização da indústria têxtil e a máquina a vapor." },
-        { text: "A primeira Revolução Industrial usou eletricidade e petróleo como fontes de energia.", answer: false, justification: "Eletricidade e petróleo são da Segunda Revolução Industrial; na primeira, usava-se carvão." },
-        { text: "O ludismo era um movimento que destruía máquinas em protesto.", answer: true, justification: "Os ludistas quebravam máquinas contra a exploração e o desemprego." },
-        { text: "O Fordismo (linha de montagem) é característico da Primeira Revolução Industrial.", answer: false, justification: "O Fordismo é da Segunda Revolução Industrial, no início do século XX." }
+        {
+            text: "A Idade Moderna foi um período de cerca de 300 anos da história ocidental, compreendido entre 1453 (Queda de Constantinopla) e 1789 (início da Revolução Francesa).",
+            correct: true,
+            justification: "Correto. A Idade Moderna é delimitada por esses dois marcos: a Queda de Constantinopla (1453) e a Revolução Francesa (1789)."
+        },
+        {
+            text: "Uma das principais características da Idade Moderna foi a transição econômica do capitalismo comercial para o feudalismo.",
+            correct: false,
+            justification: "É o contrário. A transição foi do feudalismo para o capitalismo comercial, marcando o fim do mundo medieval e o início da economia mercantil."
+        },
+        {
+            text: "A sociedade da Idade Moderna era estamental e permitia ampla mobilidade social entre clero, nobreza e povo.",
+            correct: false,
+            justification: "Falso. A sociedade estamental era rígida e praticamente não havia mobilidade social: quem nascia no Terceiro Estado permanecia nele."
+        },
+        {
+            text: "Durante a Idade Moderna ocorreu a centralização política, com o fim do poder dos senhores feudais e o surgimento dos Estados Nacionais e do Absolutismo.",
+            correct: true,
+            justification: "Correto. Os monarcas concentraram poder, criaram exércitos nacionais, burocracia e sistema tributário, dando origem aos Estados Nacionais."
+        },
+        {
+            text: "O Renascimento Cultural surgiu na Itália no século XIV e se espalhou pela Europa nos séculos XV e XVI, valorizando a razão, a natureza e o ser humano (humanismo).",
+            correct: true,
+            justification: "Correto. O Renascimento retomou os valores greco-romanos e colocou o ser humano no centro das preocupações (antropocentrismo)."
+        },
+        {
+            text: "O Renascimento reforçou a mentalidade medieval ao colocar Deus no centro de todas as preocupações, em uma perspectiva teocêntrica.",
+            correct: false,
+            justification: "Falso. O Renascimento rompeu com a mentalidade medieval: substituiu o teocentrismo pelo antropocentrismo e valorizou a razão e a observação da natureza."
+        },
+        {
+            text: "A invenção da imprensa por Gutenberg foi fundamental para a difusão do conhecimento durante o Renascimento.",
+            correct: true,
+            justification: "Correto. A imprensa permitiu a reprodução rápida de livros e ideias, ampliando enormemente a circulação do conhecimento pela Europa."
+        },
+        {
+            text: "Maquiavel, autor de 'O Príncipe', defendia um idealismo político baseado exclusivamente em valores cristãos e na moral tradicional.",
+            correct: false,
+            justification: "Falso. Maquiavel é considerado o precursor do realismo político: analisava o poder como ele é, separando a política da moral religiosa."
+        },
+        {
+            text: "O reinado de Luís XIV, o 'Rei Sol', na França, é um exemplo clássico de monarquia absolutista, em que o rei concentrava a autoridade máxima.",
+            correct: true,
+            justification: "Correto. Luís XIV reinou 72 anos e é o símbolo do Absolutismo, com poder concentrado nas mãos do monarca."
+        },
+        {
+            text: "A Revolução Gloriosa (1688), na Inglaterra, fortaleceu o absolutismo real ao ampliar os poderes do monarca.",
+            correct: false,
+            justification: "Falso. A Revolução Gloriosa limitou o poder real e fortaleceu o Parlamento, consolidando o parlamentarismo inglês."
+        },
+        {
+            text: "A Paz de Westfália (1648) foi importante para a consolidação do sistema de Estados-nação e para a diplomacia moderna.",
+            correct: true,
+            justification: "Correto. A Paz de Westfália encerrou a Guerra dos Trinta Anos e consolidou o sistema de Estados-nação soberanos."
+        },
+        {
+            text: "As Grandes Navegações foram motivadas pela busca de metais preciosos e especiarias, pela difusão da fé cristã e pela necessidade de rotas alternativas para o Oriente.",
+            correct: true,
+            justification: "Correto. Essas foram as principais motivações da expansão marítima europeia nos séculos XV e XVI."
+        },
+        {
+            text: "Vasco da Gama chegou à América em 1492, enquanto Cristóvão Colombo chegou à Índia em 1498.",
+            correct: false,
+            justification: "Falso. Está invertido: Colombo chegou à América em 1492 (pela Espanha) e Vasco da Gama chegou à Índia em 1498 (por Portugal)."
+        },
+        {
+            text: "O comércio triangular colonial envolvia a Europa, a África e as Américas, integrando o Oceano Atlântico como eixo do comércio mundial entre os séculos XVI e XVIII.",
+            correct: true,
+            justification: "Correto. O comércio triangular ligava os três continentes e incluía, entre outros produtos, o tráfico de escravizados africanos."
+        },
+        {
+            text: "O mercantilismo defendia o livre-comércio e a mínima intervenção do Estado na economia.",
+            correct: false,
+            justification: "Falso. O mercantilismo era baseado na forte intervenção do Estado, no protecionismo, no metalismo e na busca de balança comercial favorável."
+        },
+        {
+            text: "O metalismo, a busca por uma balança comercial favorável, o protecionismo e o colonialismo são práticas características do mercantilismo.",
+            correct: true,
+            justification: "Correto. São exatamente as práticas econômicas que visavam ao enriquecimento do Estado entre os séculos XVI e XVIII."
+        },
+        {
+            text: "No Antigo Regime, o Primeiro Estado era formado pela nobreza e o Segundo Estado pelo clero.",
+            correct: false,
+            justification: "Falso. A ordem está invertida: Primeiro Estado = Clero; Segundo Estado = Nobreza; Terceiro Estado = povo (burguesia, camponeses, artesãos)."
+        },
+        {
+            text: "O Terceiro Estado sustentava a máquina estatal por meio de impostos, mas não possuía privilégios nem representação política.",
+            correct: true,
+            justification: "Correto. Clero e nobreza tinham privilégios e isenção de impostos; o Terceiro Estado (cerca de 97% da população) sustentava o país."
+        },
+        {
+            text: "O Iluminismo foi um movimento intelectual do século XVIII que defendia a razão, a liberdade e a igualdade jurídica, combatendo o absolutismo.",
+            correct: true,
+            justification: "Correto. O Iluminismo criticava o Antigo Regime e inspirou as revoluções liberais (Americana e Francesa)."
+        },
+        {
+            text: "Montesquieu propôs a separação dos poderes do Estado em Executivo, Legislativo e Judiciário.",
+            correct: true,
+            justification: "Correto. Essa é a célebre contribuição de Montesquieu, presente em 'O Espírito das Leis'."
+        },
+        {
+            text: "Rousseau, autor de 'O Contrato Social', defendia a soberania popular, ou seja, o poder pertencente ao povo.",
+            correct: true,
+            justification: "Correto. Para Rousseau, a legitimidade do poder está na vontade geral e na soberania popular."
+        },
+        {
+            text: "Para John Locke, os direitos naturais eram apenas a vida e a liberdade, não incluindo a propriedade.",
+            correct: false,
+            justification: "Falso. Locke defendia três direitos naturais: vida, liberdade e propriedade."
+        },
+        {
+            text: "Na manufatura já havia divisão do trabalho, mas as ferramentas continuavam manuais; na maquinofatura surgiram as máquinas movidas a água e depois a vapor.",
+            correct: true,
+            justification: "Correto. A maquinofatura concentrou trabalhadores em grandes unidades produtivas, com jornadas longas e condições precárias."
+        },
+        {
+            text: "A Primeira Fase da Revolução Industrial ocorreu na Inglaterra, com destaque para a indústria têxtil, a siderurgia e a máquina a vapor de Watt.",
+            correct: true,
+            justification: "Correto. A 2ª Fase (século XIX) foi marcada pela eletricidade, pelo petróleo e pela indústria química."
+        },
+        {
+            text: "A Revolução Francesa (1789–1799) foi motivada pela crise social dos Três Estados, pela crise econômica e pelas ideias iluministas, marcando o fim do Antigo Regime e o início da Idade Contemporânea.",
+            correct: true,
+            justification: "Correto. Durante o Período do Terror (1792–1795), os jacobinos liderados por Robespierre guilhotinaram Luís XVI e perseguiram opositores."
+        }
     ];
 
+    // ============================================================
+    // LÓGICA DO QUIZ (idêntica ao modelo original)
+    // ============================================================
     const total = questions.length;
     let currentIndex = 0;
     let userAnswers = new Array(total).fill(null);
-    let quizFontSize = 16;
+    let userJustification = new Array(total).fill(null);
 
-    const introScreen = document.getElementById('introScreen');
+    const capaScreen = document.getElementById('capaScreen');
     const quizScreen = document.getElementById('quizScreen');
     const resultScreen = document.getElementById('resultScreen');
-    const startQuizBtn = document.getElementById('startQuizBtn');
-    const restartQuizBtn = document.getElementById('restartQuizBtn');
+    const endScreen = document.getElementById('endScreen');
     const questionText = document.getElementById('questionText');
+    const questionImage = document.getElementById('questionImage');
+    const optionsArea = document.getElementById('optionsArea');
     const feedbackArea = document.getElementById('feedbackArea');
-    const trueBtn = document.getElementById('trueBtn');
-    const falseBtn = document.getElementById('falseBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const progressText = document.getElementById('progressText');
-    const scoreDisplay = document.getElementById('scoreDisplay');
-    const progressFill = document.getElementById('progressFill');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+    const restartQuizBtn = document.getElementById('restartQuizBtn');
+    const endQuizBtn = document.getElementById('endQuizBtn');
+    const restartFromEndBtn = document.getElementById('restartFromEndBtn');
     const resultContent = document.getElementById('resultContent');
-    const fontMinusBtn = document.getElementById('fontMinusBtn');
-    const fontPlusBtn = document.getElementById('fontPlusBtn');
+    const fontMinus = document.getElementById('fontMinus');
+    const fontPlus = document.getElementById('fontPlus');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-    function updateScoreDisplay() {
-        let correct = 0;
-        for (let i = 0; i < total; i++) if (userAnswers[i] !== null && userAnswers[i] === questions[i].answer) correct++;
-        scoreDisplay.textContent = `✅ ${correct} acertos`;
+    let currentFontSize = 16;
+    function setFontSize(size) {
+        document.querySelector('.quiz-wrapper').style.fontSize = size + 'px';
+        const els = document.querySelectorAll('.question-text, .feedback, .opt-btn, .tool-btn, .restart-btn, .start-btn');
+        els.forEach(el => el.style.fontSize = size + 'px');
+        currentFontSize = size;
     }
-
-    function applyFontSize() { document.querySelector('.quiz-wrapper').style.fontSize = quizFontSize + 'px'; }
-    fontMinusBtn.addEventListener('click', () => { if (quizFontSize > 12) { quizFontSize -= 2; applyFontSize(); } });
-    fontPlusBtn.addEventListener('click', () => { if (quizFontSize < 36) { quizFontSize += 2; applyFontSize(); } });
-    fullscreenBtn.addEventListener('click', () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); });
-
-    function resetStyles() {
-        trueBtn.classList.remove('selected-true', 'correct-show', 'wrong-show');
-        falseBtn.classList.remove('selected-false', 'correct-show', 'wrong-show');
-    }
+    fontMinus.addEventListener('click', () => setFontSize(Math.max(12, currentFontSize-2)));
+    fontPlus.addEventListener('click', () => setFontSize(Math.min(36, currentFontSize+2)));
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+    });
 
     function renderQuestion() {
         const q = questions[currentIndex];
-        questionText.innerText = q.text;
-        feedbackArea.classList.add('hidden');
-        feedbackArea.className = 'feedback hidden';
-        resetStyles();
-        const val = userAnswers[currentIndex];
-        if (val !== null) {
-            if (val === true) trueBtn.classList.add('selected-true');
-            else falseBtn.classList.add('selected-false');
-            showFeedback(val);
+        questionText.innerHTML = `<strong>Afirmação ${currentIndex+1}:</strong> ${q.text}`;
+        questionImage.style.display = 'none';
+        questionImage.innerHTML = '';
+        feedbackArea.style.display = 'none';
+        feedbackArea.className = 'feedback';
+        const btns = document.querySelectorAll('.opt-btn');
+        btns.forEach(btn => btn.classList.remove('selected'));
+        const selected = userAnswers[currentIndex];
+        if (selected !== null) {
+            btns.forEach(btn => {
+                if ((btn.getAttribute('data-value') === 'true' && selected === true) ||
+                    (btn.getAttribute('data-value') === 'false' && selected === false)) {
+                    btn.classList.add('selected');
+                }
+            });
+            if (userJustification[currentIndex]) {
+                const isCorrect = (selected === questions[currentIndex].correct);
+                feedbackArea.classList.add(isCorrect ? 'correct' : 'wrong');
+                feedbackArea.style.display = 'block';
+                feedbackArea.innerHTML = userJustification[currentIndex];
+            }
         }
         progressText.innerText = `Questão ${currentIndex+1} de ${total}`;
-        progressFill.style.width = ((currentIndex+1)/total*100) + '%';
         prevBtn.disabled = (currentIndex === 0);
         nextBtn.disabled = false;
-        updateScoreDisplay();
-    }
-
-    function showFeedback(val) {
-        const q = questions[currentIndex];
-        const isCorrect = (val === q.answer);
-        resetStyles();
-        if (q.answer === true) trueBtn.classList.add('correct-show');
-        else falseBtn.classList.add('correct-show');
-        if (!isCorrect) {
-            if (val === true) trueBtn.classList.add('wrong-show');
-            else falseBtn.classList.add('wrong-show');
-        }
-        const resp = q.answer ? "VERDADEIRO" : "FALSO";
-        feedbackArea.classList.remove('hidden', 'correct', 'wrong');
-        feedbackArea.classList.add(isCorrect ? 'correct' : 'wrong');
-        feedbackArea.innerHTML = `<strong>${isCorrect ? '✓ Correto!' : '✗ Incorreto'}</strong><br>${q.justification}<br><span style="font-size:0.9rem;">Resposta correta: <strong>${resp}</strong></span>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function selectAnswer(value) {
-        if (userAnswers[currentIndex] !== null) return;
-        userAnswers[currentIndex] = value;
-        if (value === true) trueBtn.classList.add('selected-true');
-        else falseBtn.classList.add('selected-false');
-        showFeedback(value);
-        updateScoreDisplay();
+        const isTrue = (value === 'true');
+        userAnswers[currentIndex] = isTrue;
+        const q = questions[currentIndex];
+        const isCorrect = (isTrue === q.correct);
+        const correctText = q.correct ? "Verdadeiro" : "Falso";
+        const explanation = `<strong>${isCorrect ? '✓ Correto!' : '✗ Incorreto'}</strong><br><strong>Justificativa:</strong> ${q.justification}<br><span style="font-size:0.9rem;">Resposta correta: ${correctText}.</span>`;
+        userJustification[currentIndex] = explanation;
+        feedbackArea.classList.remove('correct', 'wrong');
+        feedbackArea.classList.add(isCorrect ? 'correct' : 'wrong');
+        feedbackArea.style.display = 'block';
+        feedbackArea.innerHTML = explanation;
+        const btns = document.querySelectorAll('.opt-btn');
+        btns.forEach(btn => btn.classList.remove('selected'));
+        const selectedBtn = Array.from(btns).find(btn => btn.getAttribute('data-value') === value);
+        if (selectedBtn) selectedBtn.classList.add('selected');
     }
 
-    trueBtn.addEventListener('click', () => { if (userAnswers[currentIndex] === null) selectAnswer(true); });
-    falseBtn.addEventListener('click', () => { if (userAnswers[currentIndex] === null) selectAnswer(false); });
-
+    optionsArea.addEventListener('click', (e) => {
+        const btn = e.target.closest('.opt-btn');
+        if (btn) selectAnswer(btn.getAttribute('data-value'));
+    });
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; renderQuestion(); } });
     nextBtn.addEventListener('click', () => {
-        if (userAnswers[currentIndex] === null) { alert('⚠️ Responda a questão antes de avançar.'); return; }
-        if (currentIndex < total - 1) { currentIndex++; renderQuestion(); }
+        if (userAnswers[currentIndex] === null) {
+            alert('Por favor, responda a questão antes de avançar.');
+            return;
+        }
+        if (currentIndex < total-1) { currentIndex++; renderQuestion(); }
         else mostrarResultado();
     });
 
     function mostrarResultado() {
         let acertos = 0;
-        for (let i = 0; i < total; i++) if (userAnswers[i] === questions[i].answer) acertos++;
+        let erros = 0;
+        for (let i = 0; i < total; i++) {
+            if (userAnswers[i] !== null && userAnswers[i] === questions[i].correct) acertos++;
+            else if (userAnswers[i] !== null) erros++;
+        }
         const percentual = (acertos / total) * 100;
         const nota = (acertos / total) * 10;
-        let mensagem = percentual >= 85 ? "⭐ Excelente! Você domina o Mundo Moderno." :
-                       percentual >= 70 ? "👍 Muito bom! Reveja os erros." :
-                       percentual >= 50 ? "📘 Bom, mas pode melhorar." : "📚 Releia o conteúdo e tente novamente.";
-        resultContent.innerHTML = `
+
+        let mensagem = "";
+        if (percentual >= 85) mensagem = "⭐ Excelente! Você domina as transformações do Mundo Moderno. Parabéns!";
+        else if (percentual >= 70) mensagem = "👍 Muito bom! Revise os conceitos que errou e tente novamente.";
+        else if (percentual >= 50) mensagem = "📘 Bom, mas dá para melhorar. Releia os tópicos do material sobre a Idade Moderna.";
+        else mensagem = "📚 Que tal revisar o conteúdo? Leia com calma e depois refaça o quiz.";
+
+        const resultadoHTML = `
             <div class="stats">
-                <p><strong>✅ Acertos:</strong> ${acertos} de ${total}</p>
-                <p><strong>❌ Erros:</strong> ${total - acertos} de ${total}</p>
-                <p><strong>📊 Percentual de acerto:</strong> ${percentual.toFixed(1)}%</p>
+                <p><strong>✅ Acertos:</strong> ${acertos} (${percentual.toFixed(1)}%)</p>
+                <p><strong>❌ Erros:</strong> ${erros}</p>
                 <p><strong>🎓 Nota (0 a 10):</strong> ${nota.toFixed(1)}</p>
-                <hr>
+                <p><strong>📊 Percentual de acerto:</strong> ${percentual.toFixed(1)}%</p>
+                <hr style="margin: 15px 0;">
                 <p>${mensagem}</p>
             </div>
         `;
+        resultContent.innerHTML = resultadoHTML;
         quizScreen.classList.remove('active');
         resultScreen.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function reiniciar() {
+    function reiniciarQuiz() {
         userAnswers = new Array(total).fill(null);
+        userJustification = new Array(total).fill(null);
         currentIndex = 0;
         resultScreen.classList.remove('active');
-        introScreen.classList.add('active');
+        endScreen.classList.remove('active');
+        capaScreen.classList.remove('active');
+        quizScreen.classList.add('active');
+        renderQuestion();
     }
-    restartQuizBtn.addEventListener('click', reiniciar);
+
     startQuizBtn.addEventListener('click', () => {
-        introScreen.classList.remove('active');
+        capaScreen.classList.remove('active');
         quizScreen.classList.add('active');
         renderQuestion();
     });
-    applyFontSize();
+
+    restartQuizBtn.addEventListener('click', reiniciarQuiz);
+    restartFromEndBtn.addEventListener('click', reiniciarQuiz);
+
+    endQuizBtn.addEventListener('click', () => {
+        resultScreen.classList.remove('active');
+        quizScreen.classList.remove('active');
+        capaScreen.classList.remove('active');
+        endScreen.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    setFontSize(16);
 </script>
 </body>
 </html>
