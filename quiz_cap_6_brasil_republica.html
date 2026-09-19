@@ -3,252 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Quiz · Bloco 4 · Brasil República</title>
+    <title>Quiz · Brasil República · História</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Verdana', 'Arial', sans-serif; background: #f5f7f6; color: #1a2e2a; line-height: 1.4; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 12px; }
-        .quiz-wrapper { width: 100%; max-width: 85%; margin: 0 auto; background: white; border-radius: 28px; box-shadow: 0 12px 28px rgba(0,0,0,0.04); padding: 20px 30px; border: 1px solid #dde5e0; }
-        .screen { display: none; } .screen.active { display: block; }
-        .intro-card { text-align: center; }
-        .intro-card h1 { font-size: 2.2rem; font-weight: 700; color: #0f3d2e; margin-bottom: 20px; }
-        .intro-card .revisao { font-size: 1.4rem; color: #2a5e4a; margin-bottom: 12px; font-weight: 600; }
-        .intro-card .professora { font-size: 1.2rem; color: #1a5e44; margin-bottom: 40px; font-style: italic; }
-        .intro-card .btn-iniciar { background: #1a5e44; color: white; border: none; padding: 18px 40px; font-size: 1.4rem; font-weight: bold; border-radius: 60px; cursor: pointer; margin-top: 20px; transition: transform 0.2s; }
-        .intro-card .btn-iniciar:hover { background: #0f4a35; transform: scale(1.02); }
-        .title { font-size: 1.7rem; font-weight: 700; color: #0f3d2e; margin-bottom: 8px; text-align: center; }
-        .sub { text-align: center; color: #2a5e4a; margin-bottom: 20px; font-style: italic; }
-        .progress-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: #1a5e44; margin-bottom: 8px; }
-        .progress-bar-bg { background: #dee6e1; height: 8px; border-radius: 20px; overflow: hidden; margin-bottom: 20px; }
-        .progress-fill { background: #1a7a58; height: 8px; width: 0%; border-radius: 20px; transition: width 0.2s; }
-        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; line-height: 1.5; text-align: center; background: #f0f7f3; padding: 20px; border-radius: 20px; }
-        .options { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
-        .opt-btn { background: #ecf3ef; border: 2px solid #b3cdbf; padding: 14px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 60px; cursor: pointer; transition: 0.1s; text-align: center; min-width: 150px; font-family: inherit; }
-        .opt-btn:hover { background: #dce8e0; transform: scale(1.02); }
-        .opt-btn.selected-true { background: #1a5e44; color: white; border-color: #1a5e44; }
-        .opt-btn.selected-false { background: #1a5e44; color: white; border-color: #1a5e44; }
-        .opt-btn.correct-show { background: #28a745; color: white; border-color: #28a745; }
-        .opt-btn.wrong-show { background: #dc3545; color: white; border-color: #dc3545; }
-        .feedback { margin-top: 20px; padding: 15px; border-radius: 20px; font-size: 0.95rem; line-height: 1.4; }
+        body {
+            font-family: 'Verdana', 'Arial', sans-serif;
+            background: #e8e2d4;
+            color: #2c3e2f;
+            line-height: 1.4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            margin: 0;
+        }
+        .quiz-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fffaf2;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 14px 20px;
+            border: 1px solid #d4c9b5;
+        }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4a6b3c;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .sub {
+            text-align: center;
+            color: #6b5e4a;
+            margin-bottom: 16px;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            line-height: 1.5;
+            color: #2c3e2f;
+        }
+        .question-image {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .question-image img {
+            max-width: 100%;
+            max-height: 260px;
+            border-radius: 12px;
+            border: 1px solid #d4c9b5;
+        }
+        .question-image .img-caption {
+            font-size: 0.85rem;
+            color: #6b5e4a;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        .options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .opt-btn {
+            background: #e8e2d4;
+            border: 1px solid #c2b59b;
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 48px;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #2c3e2f;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        .opt-btn.selected {
+            background: #4a6b3c;
+            color: #fffaf2;
+            border-color: #4a6b3c;
+        }
+        .feedback {
+            margin-top: 18px;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+        }
         .feedback.correct { background: #d4edda; border-left: 6px solid #28a745; }
         .feedback.wrong { background: #f8d7da; border-left: 6px solid #dc3545; }
-        .hidden { display: none; }
-        .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 20px 0 10px; padding-top: 15px; border-top: 1px solid #dde5e0; }
-        .tool-btn { background: #ecf3ef; border: 1px solid #b3cdbf; padding: 10px 18px; font-size: 1rem; font-weight: 600; border-radius: 48px; cursor: pointer; transition: 0.1s; font-family: inherit; }
-        .tool-btn:hover { background: #dce8e0; }
-        .tool-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 16px 0 8px;
+        }
+        .tool-btn {
+            background: #e8e2d4;
+            border: 1px solid #c2b59b;
+            padding: 10px 12px;
+            font-size: 1rem;
+            border-radius: 48px;
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            color: #2c3e2f;
+            font-weight: 600;
+        }
+        .tool-btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .progress {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: #4a6b3c;
+            text-align: right;
+        }
+        .font-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            justify-content: flex-end;
+        }
+        .font-btn {
+            background: #ddd0bc;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2c3e2f;
+            font-size: 0.9rem;
+        }
         .result-screen { text-align: center; }
-        .result-box { background: #f0f7f3; padding: 25px; border-radius: 28px; margin: 20px 0; }
-        .restart-btn { background: #1a5e44; color: white; border: none; padding: 16px 24px; border-radius: 60px; width: 100%; cursor: pointer; margin-top: 10px; font-size: 1.2rem; font-weight: bold; }
+        .result-box {
+            background: #f5efe5;
+            padding: 20px;
+            border-radius: 28px;
+            margin: 20px 0;
+        }
+        .restart-btn {
+            background: #4a6b3c;
+            color: #fffaf2;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .end-btn {
+            background: #b36b3c;
+            color: #fffaf2;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
         .stats { font-size: 1.1rem; line-height: 1.8; }
-        hr { margin: 15px 0; border-color: #c0d9ce; }
-        @media (max-width: 640px) { .quiz-wrapper { max-width: 100%; padding: 15px; } .opt-btn { padding: 10px 20px; min-width: 120px; font-size: 1rem; } .toolbar { gap: 8px; } .tool-btn { padding: 8px 14px; font-size: 0.85rem; } .question-text { font-size: 1rem; padding: 15px; } }
+
+        /* ---- Página em branco (tela de encerramento) ---- */
+        .blank-page {
+            min-height: 72vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            background: #fffaf2;
+            border-radius: 20px;
+        }
+
+        .capa {
+            text-align: center;
+            padding: 30px 16px;
+        }
+        .capa h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: #4a6b3c;
+        }
+        .capa h2 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            color: #b36b3c;
+        }
+        .capa .subtitulo {
+            font-size: 18px;
+            color: #6b5e4a;
+            margin-bottom: 8px;
+        }
+        .capa .autora {
+            font-size: 17px;
+            color: #8b7a5e;
+            margin-top: 24px;
+            font-style: italic;
+        }
+        .capa .info-quiz {
+            font-size: 15px;
+            color: #9b8a6e;
+            margin-top: 30px;
+            border-top: 1px solid #d4c9b5;
+            padding-top: 20px;
+        }
+        .start-btn {
+            background: #4a6b3c;
+            color: #fffaf2;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 22px;
+            font-weight: bold;
+        }
+        .start-btn:hover { background: #3d5a32; }
+
+        @media (max-width: 640px) {
+            .quiz-wrapper { padding: 12px 14px; border-radius: 18px; }
+            .opt-btn { padding: 10px 16px; font-size: 1rem; min-width: 80px; }
+            .capa h1 { font-size: 26px; }
+            .capa h2 { font-size: 20px; }
+            .title { font-size: 1.3rem; }
+            .question-text { font-size: 1.05rem; }
+            .blank-page { min-height: 65vh; }
+        }
     </style>
 </head>
 <body>
 <div class="quiz-wrapper">
-    <div id="introScreen" class="screen active intro-card">
-        <h1>🇧🇷 Brasil República</h1>
-        <div class="revisao">Quiz · Bloco 4 · 31 questões</div>
-        <div class="professora">Professora Angela Siqueira</div>
-        <button class="btn-iniciar" id="startQuizBtn">▶ Iniciar Quiz</button>
+    <!-- TELA DE CAPA -->
+    <div id="capaScreen" class="screen active">
+        <div class="capa">
+            <h1>📝 Quiz de História</h1>
+            <h2>Brasil República</h2>
+            <p class="subtitulo">Das oligarquias ao século XXI</p>
+            <p class="autora">Professora Angela Siqueira</p>
+            <p class="info-quiz">25 afirmações para julgar VERDADEIRO ou FALSO</p>
+            <button class="start-btn" id="startQuizBtn">▶ Iniciar Quiz</button>
+        </div>
     </div>
 
+    <!-- TELA DO QUIZ -->
     <div id="quizScreen" class="screen">
-        <div class="title">🎯 Verdadeiro ou Falso?</div>
-        <div class="sub">Proclamação · Primeira República · Vargas · Golpe 1964 · Nacionalismo · Regime militar · Nova República · Constituição 1988 · Atualidades</div>
-        <div class="progress-row">
-            <span id="progressText">Questão 1 de 31</span>
-            <span id="scoreDisplay">✅ 0 acertos</span>
+        <div class="font-controls">
+            <button class="font-btn" id="fontMinus">A−</button>
+            <button class="font-btn" id="fontPlus">A+</button>
+            <button class="font-btn" id="fullscreenBtn">⛶ Tela cheia</button>
         </div>
-        <div class="progress-bar-bg"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
+        <div class="title">🇧🇷 Brasil República</div>
+        <div class="sub">25 afirmações – responda com Verdadeiro ou Falso</div>
+        <div class="progress" id="progressText">Questão 1 de 25</div>
         <div id="questionArea">
-            <div id="questionText" class="question-text"></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="question-image" id="questionImage" style="display: none;"></div>
             <div class="options" id="optionsArea">
-                <button class="opt-btn" id="trueBtn">✅ VERDADEIRO</button>
-                <button class="opt-btn" id="falseBtn">❌ FALSO</button>
+                <button class="opt-btn" data-value="true">✅ Verdadeiro</button>
+                <button class="opt-btn" data-value="false">❌ Falso</button>
             </div>
-            <div id="feedbackArea" class="feedback hidden"></div>
+            <div class="feedback" id="feedbackArea"></div>
         </div>
         <div class="toolbar">
-            <button class="tool-btn" id="fontMinusBtn">A−</button>
-            <button class="tool-btn" id="fontPlusBtn">A+</button>
-            <button class="tool-btn" id="fullscreenBtn">⛶ Tela cheia</button>
             <button class="tool-btn" id="prevBtn" disabled>◀ Anterior</button>
             <button class="tool-btn" id="nextBtn" disabled>Próxima ▶</button>
         </div>
     </div>
 
+    <!-- TELA DE RESULTADO -->
     <div id="resultScreen" class="screen result-screen">
         <h2>📊 Estatística da sua pontuação</h2>
         <div class="result-box" id="resultContent"></div>
         <button class="restart-btn" id="restartQuizBtn">🔄 Refazer quiz</button>
+        <button class="end-btn" id="endQuizBtn">⏹ Encerrar</button>
+    </div>
+
+    <!-- TELA FINAL (PÁGINA EM BRANCO) -->
+    <div id="endScreen" class="screen">
+        <div class="blank-page">
+            <button class="restart-btn" id="restartFromEndBtn">🔄 Refazer quiz</button>
+        </div>
     </div>
 </div>
 
 <script>
+    // ============================================================
+    // QUESTÕES – baseadas no PDF "Brasil República"
+    // ============================================================
     const questions = [
-        { text: "A Proclamação da República (1889) foi um movimento amplamente apoiado pela população, que participou ativamente das ruas.", answer: false, justification: "Segundo o jornalista Aristides Lobo, o povo 'assistiu àquilo bestializado', sem participação popular significativa." },
-        { text: "A Primeira República (1889–1930) foi marcada pelo domínio das oligarquias e pela política do café-com-leite.", answer: true, justification: "O poder era controlado por São Paulo (café) e Minas Gerais (leite), com eleições manipuladas (voto de cabresto)." },
-        { text: "A Revolução de 1930 colocou Getúlio Vargas no poder, encerrando a Primeira República.", answer: true, justification: "A insatisfação com a crise de 1929 e o domínio oligárquico levaram à Revolução de 1930, que levou Vargas ao poder." },
-        { text: "O Estado Novo (1937–1945) foi um período democrático com ampla participação popular.", answer: false, justification: "O Estado Novo foi uma ditadura, com repressão, censura e concentração de poder em Vargas." },
-        { text: "A CLT (Consolidação das Leis do Trabalho) foi criada em 1943, durante o Estado Novo, reunindo a legislação trabalhista.", answer: true, justification: "A CLT foi um marco dos direitos trabalhistas, mas foi concedida em um contexto autoritário." },
-        { text: "O suicídio de Getúlio Vargas, em 1954, ocorreu durante seu segundo governo, em meio a um processo de impeachment.", answer: true, justification: "Vargas suicidou-se em agosto de 1954, pressionado pela oposição e pela imprensa, em meio a uma crise política." },
-        { text: "O governo de Juscelino Kubitschek (1956–1961) foi marcado pelo Plano de Metas e pela construção de Brasília.", answer: true, justification: "JK promoveu o desenvolvimentismo, com investimentos em indústria, energia e transportes, e a nova capital." },
-        { text: "Jânio Quadros renunciou à presidência em 1961 e foi sucedido por João Goulart, que assumiu com plenos poderes imediatamente.", answer: false, justification: "Jango assumiu com poderes limitados (parlamentarismo) até 1963, quando o presidencialismo foi restabelecido por plebiscito." },
-        { text: "As reformas de base propostas por João Goulart incluíam reforma agrária e reforma urbana, entre outras.", answer: true, justification: "As reformas de base visavam reduzir desigualdades, mas enfrentaram forte oposição, contribuindo para o golpe de 1964." },
-        { text: "O golpe de 1964 instaurou um regime civil-militar que durou 21 anos, com repressão e censura.", answer: true, justification: "O regime militar (1964–1985) foi marcado por repressão política, censura e concentração do poder." },
-        { text: "O AI-5 (1968) foi um ato institucional que fechou o Congresso e suspendeu direitos políticos, intensificando a repressão.", answer: true, justification: "O AI-5 foi o mais repressivo dos Atos Institucionais, permitindo prisões sem julgamento e censura." },
-        { text: "O 'milagre econômico' (1968–1973) foi um período de crescimento acelerado, mas com aumento da dívida externa e concentração de renda.", answer: true, justification: "O crescimento de mais de 10% ao ano foi acompanhado de desigualdade e endividamento." },
-        { text: "A Lei da Anistia (1979) perdoou crimes políticos cometidos por ambos os lados, mas sem punir militares por torturas e assassinatos.", answer: true, justification: "A anistia foi ampla, permitindo o retorno de exilados, mas também isentando os agentes da repressão." },
-        { text: "A campanha 'Diretas Já' (1984) foi um movimento popular que conseguiu aprovar a emenda para eleições diretas para presidente.", answer: false, justification: "A emenda Dante de Oliveira foi rejeitada, e a redemocratização se deu por eleição indireta em 1985." },
-        { text: "A Constituição de 1988 é chamada de 'Constituição Cidadã' por garantir amplos direitos civis, políticos, sociais e coletivos.", answer: true, justification: "A Constituição de 1988 consolidou a democracia e universalizou direitos como saúde, educação e moradia." },
-        { text: "O Plano Real (1994) foi um plano de estabilização econômica que conseguiu controlar a hiperinflação no Brasil.", answer: true, justification: "O Plano Real, com a criação do Real, reduziu drasticamente a inflação e estabilizou a economia." },
-        { text: "As privatizações no governo FHC (1995–2002) incluíram a venda da Vale do Rio Doce e do sistema Telebrás.", answer: true, justification: "O programa de privatizações transferiu empresas estatais para o setor privado, sob a justificativa de modernização." },
-        { text: "O impeachment de Dilma Rousseff (2016) foi o primeiro na história do Brasil, sendo motivado por acusações de corrupção.", answer: false, justification: "O impeachment de Dilma foi por 'pedaladas fiscais' (crime de responsabilidade), não por corrupção. O primeiro impeachment foi de Collor, em 1992." },
-        { text: "A Lei Maria da Penha (2006) é uma lei que visa proteger as mulheres da violência doméstica e familiar.", answer: true, justification: "A lei é um marco no combate à violência contra a mulher, embora os desafios persistam." },
-        { text: "A população negra no Brasil sofre com o racismo estrutural e com menores indicadores de educação, saúde e renda.", answer: true, justification: "O racismo estrutural é um legado da escravidão, afetando a população negra até os dias atuais." },
-        { text: "A Guerra do Paraguai (1864–1870) fortaleceu o Exército brasileiro e aumentou a dívida do império.", answer: true, justification: "O conflito deixou o Exército fortalecido politicamente, mas também endividou o Brasil." },
-        { text: "O golpe da maioridade (1840) antecipou a maioridade de dom Pedro II para que ele pudesse governar aos 15 anos.", answer: true, justification: "Os liberais promoveram o golpe para que Pedro II assumisse o trono antes dos 18 anos." },
-        { text: "A Lei de Terras (1850) facilitou o acesso à terra para pequenos agricultores e libertos.", answer: false, justification: "A lei dificultou o acesso, pois exigia compra, excluindo posseiros e libertos." },
-        { text: "A Revolução Farroupilha (1835–1845) proclamou a República Rio-Grandense e contou com a participação de Garibaldi.", answer: true, justification: "Os farrapos proclamaram a República Rio-Grandense em 1836, com apoio de Giuseppe Garibaldi e Anita." },
-        { text: "A Lei Eusébio de Queirós (1850) aboliu a escravidão no Brasil.", answer: false, justification: "A lei proibiu o tráfico transatlântico de escravos, não a escravidão, que só foi abolida em 1888." },
-        { text: "A Confederação do Equador (1824) foi um movimento republicano e federalista contra o autoritarismo de dom Pedro I.", answer: true, justification: "O movimento contestava a centralização monárquica e defendia a república." },
-        { text: "O Poder Moderador, criado pela Constituição de 1824, permitia ao imperador dissolver a Câmara e vetar leis.", answer: true, justification: "Esse poder dava amplos poderes ao imperador sobre os demais poderes." },
-        { text: "A Revolta dos Malês (1835), em Salvador, foi um levante de escravizados e libertos que seguiam a fé islâmica.", answer: true, justification: "Os malês eram africanos islamizados que lideraram uma revolta contra a escravidão." },
-        { text: "O Instituto Histórico e Geográfico Brasileiro (IHGB) promoveu a valorização da cultura africana na identidade nacional.", answer: false, justification: "O IHGB idealizou o indígena e apagou a importância dos africanos na formação do Brasil." },
-        { text: "A fotografia chegou ao Brasil em 1840 e foi incentivada por dom Pedro II.", answer: true, justification: "O imperador era entusiasta da fotografia, promovendo sua difusão." },
-        { text: "A crise de 1929 impactou duramente o Brasil, especialmente o setor cafeeiro, contribuindo para o fim da Primeira República.", answer: true, justification: "A queda do preço do café e a falta de crédito agravaram a crise econômica e política." }
+        {
+            text: "A Proclamação da República, em 1889, foi liderada pelo Marechal Deodoro da Fonseca, que depôs Dom Pedro II.",
+            correct: true,
+            justification: "Correto. O golpe militar de 15 de novembro de 1889 instaurou a República e depôs o imperador Dom Pedro II."
+        },
+        {
+            text: "A Primeira Constituição republicana, de 1891, estabeleceu o federalismo, o presidencialismo e a separação entre Igreja e Estado.",
+            correct: true,
+            justification: "Correto. Essas foram as principais características da primeira Constituição republicana brasileira."
+        },
+        {
+            text: "A política do café-com-leite foi marcada pela alternância de poder entre São Paulo e Rio de Janeiro, as duas maiores oligarquias da época.",
+            correct: false,
+            justification: "Falso. A alternância era entre São Paulo e Minas Gerais, não Rio de Janeiro. Daí o nome café (SP) com leite (MG)."
+        },
+        {
+            text: "O coronelismo, a Política dos Governadores e a fraude eleitoral foram características marcantes da Primeira República (1889–1930).",
+            correct: true,
+            justification: "Correto. Esses mecanismos garantiam o controle das oligarquias sobre o processo político e excluíam a maioria da população."
+        },
+        {
+            text: "A Revolta de Canudos (1893–97) e a Guerra do Contestado (1912–16) foram movimentos sociais que eclodiram durante a Primeira República.",
+            correct: true,
+            justification: "Correto. Ambos foram movimentos de resistência social e religiosa que ocorreram nesse período."
+        },
+        {
+            text: "O tenentismo, movimento dos anos 1920, era composto exclusivamente por civis e defendia a manutenção do poder oligárquico.",
+            correct: false,
+            justification: "Falso. O tenentismo era um movimento militar de jovens oficiais que criticava o poder oligárquico e defendia reformas políticas."
+        },
+        {
+            text: "A Semana de Arte Moderna de 1922 foi um marco cultural da Primeira República e do início do pensamento nacionalista brasileiro.",
+            correct: true,
+            justification: "Correto. A Semana de 1922 rompeu com padrões estéticos tradicionais e valorizou a cultura nacional."
+        },
+        {
+            text: "A crise de 1929 e o esgotamento do modelo oligárquico abriram caminho para a Revolução de 1930, que levou Getúlio Vargas ao poder.",
+            correct: true,
+            justification: "Correto. A crise econômica mundial de 1929 afetou o café e desestabilizou a República Velha, culminando na Revolução de 1930."
+        },
+        {
+            text: "O Governo Provisório de Vargas (1930–34) foi marcado pela centralização política, por reformas trabalhistas e pela criação do Código Eleitoral, que instituiu o voto secreto e o voto feminino.",
+            correct: true,
+            justification: "Correto. Essas foram conquistas importantes do período, embora o governo também tenha sido marcado por autoritarismo."
+        },
+        {
+            text: "O Estado Novo (1937–45) foi um período de ampla liberdade democrática, sem censura ou repressão política.",
+            correct: false,
+            justification: "Falso. O Estado Novo foi uma ditadura com censura, repressão política, culto à personalidade e forte intervencionismo estatal."
+        },
+        {
+            text: "Durante o Estado Novo, foram criadas a CLT (Consolidação das Leis do Trabalho) e diversas estatais, fortalecendo o intervencionismo estatal.",
+            correct: true,
+            justification: "Correto. A CLT (1943) e a criação de empresas estatais foram marcas do período, que modernizou o país com forte repressão política."
+        },
+        {
+            text: "Na Segunda Guerra Mundial, o Brasil lutou ao lado dos Aliados e enviou a FEB (Força Expedicionária Brasileira) para combater na Itália.",
+            correct: true,
+            justification: "Correto. A participação da FEB na Itália foi um marco da política externa brasileira durante o Estado Novo."
+        },
+        {
+            text: "O período democrático de 1946 a 1964 foi marcado por estabilidade política total, sem crises institucionais ou polarização.",
+            correct: false,
+            justification: "Falso. O período foi marcado por instabilidade, crises institucionais, reformas de base e crescente polarização, culminando no golpe de 1964."
+        },
+        {
+            text: "O Plano de Metas de Juscelino Kubitschek (1956–61) é um exemplo de desenvolvimentismo, com industrialização acelerada e investimentos estrangeiros.",
+            correct: true,
+            justification: "Correto. O Plano de Metas tinha como slogan '50 anos em 5' e priorizava setores como energia, transporte e indústria de base."
+        },
+        {
+            text: "O nacionalismo defendia o controle estatal dos setores estratégicos, como petróleo e energia, com forte presença do Estado na economia.",
+            correct: true,
+            justification: "Correto. O nacionalismo se opunha ao desenvolvimentismo, que priorizava investimentos estrangeiros e abertura comercial."
+        },
+        {
+            text: "O golpe civil-militar de 1964 depôs o presidente João Goulart (Jango) e contou com apoio de setores da sociedade civil.",
+            correct: true,
+            justification: "Correto. A Marcha da Família com Deus pela Liberdade, em 1964, foi uma das manifestações que precederam o golpe."
+        },
+        {
+            text: "O AI-5 (1968) foi um ato institucional que ampliou as liberdades democráticas e fortaleceu o Congresso Nacional.",
+            correct: false,
+            justification: "Falso. O AI-5 fechou o Congresso, instituiu a censura, permitiu prisões e tortura, sendo o mais duro instrumento do regime militar."
+        },
+        {
+            text: "O 'milagre econômico' (1968–73) foi um período de alto crescimento econômico, mas com endividamento externo e concentração de renda.",
+            correct: true,
+            justification: "Correto. O crescimento veio acompanhado de custos sociais elevados, como concentração de renda e endividamento externo."
+        },
+        {
+            text: "A campanha 'Diretas Já', em 1984, foi um movimento popular que exigia eleições diretas para presidente e marcou a redemocratização.",
+            correct: true,
+            justification: "Correto. Apesar da mobilização, a emenda das Diretas Já foi rejeitada, e a transição se deu por eleições indiretas em 1985."
+        },
+        {
+            text: "A Constituição de 1988, conhecida como 'Constituição Cidadã', ampliou direitos civis, políticos e sociais, e fortaleceu a descentralização do Estado.",
+            correct: true,
+            justification: "Correto. A Constituição de 1988 é um marco na proteção de direitos e na organização do Estado brasileiro."
+        },
+        {
+            text: "O Plano Real (1994) foi bem-sucedido no controle da hiperinflação, que chegou a mais de 2.000% ao ano no início dos anos 1990.",
+            correct: true,
+            justification: "Correto. O Plano Real estabilizou a economia e criou as bases para o atual sistema monetário brasileiro."
+        },
+        {
+            text: "As privatizações dos anos 1990, sob o argumento de eficiência e redução do endividamento, resultaram em maior participação do capital estrangeiro na economia.",
+            correct: true,
+            justification: "Correto. Setores como telecomunicações e siderurgia foram privatizados, mas houve perda de controle estatal sobre setores estratégicos."
+        },
+        {
+            text: "O Brasil do século XXI é um dos países mais desiguais do mundo, com desigualdades de renda, raça, gênero e região.",
+            correct: true,
+            justification: "Correto. A desigualdade brasileira é estrutural e tem raízes no passado colonial, escravista e patriarcal."
+        },
+        {
+            text: "A PEC das Domésticas (Emenda Constitucional nº 72), de 2013, foi um marco na regulamentação do trabalho doméstico no Brasil.",
+            correct: true,
+            justification: "Correto. A PEC das Domésticas garantiu direitos trabalhistas às trabalhadoras domésticas, como jornada de 8 horas e FGTS."
+        },
+        {
+            text: "O legado da escravidão e do patriarcalismo não tem relação com as desigualdades persistentes no Brasil do século XXI.",
+            correct: false,
+            justification: "Falso. O racismo estrutural, a violência de gênero e a baixa mobilidade social são heranças diretas da escravidão e do patriarcalismo."
+        }
     ];
 
+    // ============================================================
+    // LÓGICA DO QUIZ (idêntica ao modelo original)
+    // ============================================================
     const total = questions.length;
     let currentIndex = 0;
     let userAnswers = new Array(total).fill(null);
-    let quizFontSize = 16;
+    let userJustification = new Array(total).fill(null);
 
-    const introScreen = document.getElementById('introScreen');
+    const capaScreen = document.getElementById('capaScreen');
     const quizScreen = document.getElementById('quizScreen');
     const resultScreen = document.getElementById('resultScreen');
-    const startQuizBtn = document.getElementById('startQuizBtn');
-    const restartQuizBtn = document.getElementById('restartQuizBtn');
+    const endScreen = document.getElementById('endScreen');
     const questionText = document.getElementById('questionText');
+    const questionImage = document.getElementById('questionImage');
+    const optionsArea = document.getElementById('optionsArea');
     const feedbackArea = document.getElementById('feedbackArea');
-    const trueBtn = document.getElementById('trueBtn');
-    const falseBtn = document.getElementById('falseBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const progressText = document.getElementById('progressText');
-    const scoreDisplay = document.getElementById('scoreDisplay');
-    const progressFill = document.getElementById('progressFill');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+    const restartQuizBtn = document.getElementById('restartQuizBtn');
+    const endQuizBtn = document.getElementById('endQuizBtn');
+    const restartFromEndBtn = document.getElementById('restartFromEndBtn');
     const resultContent = document.getElementById('resultContent');
-    const fontMinusBtn = document.getElementById('fontMinusBtn');
-    const fontPlusBtn = document.getElementById('fontPlusBtn');
+    const fontMinus = document.getElementById('fontMinus');
+    const fontPlus = document.getElementById('fontPlus');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-    function updateScoreDisplay() {
-        let correct = 0;
-        for (let i = 0; i < total; i++) if (userAnswers[i] !== null && userAnswers[i] === questions[i].answer) correct++;
-        scoreDisplay.textContent = `✅ ${correct} acertos`;
+    let currentFontSize = 16;
+    function setFontSize(size) {
+        document.querySelector('.quiz-wrapper').style.fontSize = size + 'px';
+        const els = document.querySelectorAll('.question-text, .feedback, .opt-btn, .tool-btn, .restart-btn, .start-btn');
+        els.forEach(el => el.style.fontSize = size + 'px');
+        currentFontSize = size;
     }
-
-    function applyFontSize() { document.querySelector('.quiz-wrapper').style.fontSize = quizFontSize + 'px'; }
-    fontMinusBtn.addEventListener('click', () => { if (quizFontSize > 12) { quizFontSize -= 2; applyFontSize(); } });
-    fontPlusBtn.addEventListener('click', () => { if (quizFontSize < 36) { quizFontSize += 2; applyFontSize(); } });
-    fullscreenBtn.addEventListener('click', () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); });
-
-    function resetStyles() {
-        trueBtn.classList.remove('selected-true', 'correct-show', 'wrong-show');
-        falseBtn.classList.remove('selected-false', 'correct-show', 'wrong-show');
-    }
+    fontMinus.addEventListener('click', () => setFontSize(Math.max(12, currentFontSize-2)));
+    fontPlus.addEventListener('click', () => setFontSize(Math.min(36, currentFontSize+2)));
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+    });
 
     function renderQuestion() {
         const q = questions[currentIndex];
-        questionText.innerText = q.text;
-        feedbackArea.classList.add('hidden');
-        feedbackArea.className = 'feedback hidden';
-        resetStyles();
-        const val = userAnswers[currentIndex];
-        if (val !== null) {
-            if (val === true) trueBtn.classList.add('selected-true');
-            else falseBtn.classList.add('selected-false');
-            showFeedback(val);
+        questionText.innerHTML = `<strong>Afirmação ${currentIndex+1}:</strong> ${q.text}`;
+        questionImage.style.display = 'none';
+        questionImage.innerHTML = '';
+        feedbackArea.style.display = 'none';
+        feedbackArea.className = 'feedback';
+        const btns = document.querySelectorAll('.opt-btn');
+        btns.forEach(btn => btn.classList.remove('selected'));
+        const selected = userAnswers[currentIndex];
+        if (selected !== null) {
+            btns.forEach(btn => {
+                if ((btn.getAttribute('data-value') === 'true' && selected === true) ||
+                    (btn.getAttribute('data-value') === 'false' && selected === false)) {
+                    btn.classList.add('selected');
+                }
+            });
+            if (userJustification[currentIndex]) {
+                const isCorrect = (selected === questions[currentIndex].correct);
+                feedbackArea.classList.add(isCorrect ? 'correct' : 'wrong');
+                feedbackArea.style.display = 'block';
+                feedbackArea.innerHTML = userJustification[currentIndex];
+            }
         }
         progressText.innerText = `Questão ${currentIndex+1} de ${total}`;
-        progressFill.style.width = ((currentIndex+1)/total*100) + '%';
         prevBtn.disabled = (currentIndex === 0);
         nextBtn.disabled = false;
-        updateScoreDisplay();
-    }
-
-    function showFeedback(val) {
-        const q = questions[currentIndex];
-        const isCorrect = (val === q.answer);
-        resetStyles();
-        if (q.answer === true) trueBtn.classList.add('correct-show');
-        else falseBtn.classList.add('correct-show');
-        if (!isCorrect) {
-            if (val === true) trueBtn.classList.add('wrong-show');
-            else falseBtn.classList.add('wrong-show');
-        }
-        const resp = q.answer ? "VERDADEIRO" : "FALSO";
-        feedbackArea.classList.remove('hidden', 'correct', 'wrong');
-        feedbackArea.classList.add(isCorrect ? 'correct' : 'wrong');
-        feedbackArea.innerHTML = `<strong>${isCorrect ? '✓ Correto!' : '✗ Incorreto'}</strong><br>${q.justification}<br><span style="font-size:0.9rem;">Resposta correta: <strong>${resp}</strong></span>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function selectAnswer(value) {
-        if (userAnswers[currentIndex] !== null) return;
-        userAnswers[currentIndex] = value;
-        if (value === true) trueBtn.classList.add('selected-true');
-        else falseBtn.classList.add('selected-false');
-        showFeedback(value);
-        updateScoreDisplay();
+        const isTrue = (value === 'true');
+        userAnswers[currentIndex] = isTrue;
+        const q = questions[currentIndex];
+        const isCorrect = (isTrue === q.correct);
+        const correctText = q.correct ? "Verdadeiro" : "Falso";
+        const explanation = `<strong>${isCorrect ? '✓ Correto!' : '✗ Incorreto'}</strong><br><strong>Justificativa:</strong> ${q.justification}<br><span style="font-size:0.9rem;">Resposta correta: ${correctText}.</span>`;
+        userJustification[currentIndex] = explanation;
+        feedbackArea.classList.remove('correct', 'wrong');
+        feedbackArea.classList.add(isCorrect ? 'correct' : 'wrong');
+        feedbackArea.style.display = 'block';
+        feedbackArea.innerHTML = explanation;
+        const btns = document.querySelectorAll('.opt-btn');
+        btns.forEach(btn => btn.classList.remove('selected'));
+        const selectedBtn = Array.from(btns).find(btn => btn.getAttribute('data-value') === value);
+        if (selectedBtn) selectedBtn.classList.add('selected');
     }
 
-    trueBtn.addEventListener('click', () => { if (userAnswers[currentIndex] === null) selectAnswer(true); });
-    falseBtn.addEventListener('click', () => { if (userAnswers[currentIndex] === null) selectAnswer(false); });
-
+    optionsArea.addEventListener('click', (e) => {
+        const btn = e.target.closest('.opt-btn');
+        if (btn) selectAnswer(btn.getAttribute('data-value'));
+    });
     prevBtn.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; renderQuestion(); } });
     nextBtn.addEventListener('click', () => {
-        if (userAnswers[currentIndex] === null) { alert('⚠️ Responda a questão antes de avançar.'); return; }
-        if (currentIndex < total - 1) { currentIndex++; renderQuestion(); }
+        if (userAnswers[currentIndex] === null) {
+            alert('Por favor, responda a questão antes de avançar.');
+            return;
+        }
+        if (currentIndex < total-1) { currentIndex++; renderQuestion(); }
         else mostrarResultado();
     });
 
     function mostrarResultado() {
         let acertos = 0;
-        for (let i = 0; i < total; i++) if (userAnswers[i] === questions[i].answer) acertos++;
+        let erros = 0;
+        for (let i = 0; i < total; i++) {
+            if (userAnswers[i] !== null && userAnswers[i] === questions[i].correct) acertos++;
+            else if (userAnswers[i] !== null) erros++;
+        }
         const percentual = (acertos / total) * 100;
         const nota = (acertos / total) * 10;
-        let mensagem = percentual >= 85 ? "⭐ Excelente! Você domina a República brasileira." :
-                       percentual >= 70 ? "👍 Muito bom! Reveja os tópicos que errou." :
-                       percentual >= 50 ? "📘 Bom, mas pode melhorar." : "📚 Releia o conteúdo e tente novamente.";
-        resultContent.innerHTML = `
+
+        let mensagem = "";
+        if (percentual >= 85) mensagem = "⭐ Excelente! Você domina a história republicana brasileira. Parabéns!";
+        else if (percentual >= 70) mensagem = "👍 Muito bom! Revise os conceitos que errou e tente novamente.";
+        else if (percentual >= 50) mensagem = "📘 Bom, mas dá para melhorar. Releia os tópicos sobre a República Velha, Era Vargas e ditadura militar.";
+        else mensagem = "📚 Que tal revisar o conteúdo? Leia com calma e depois refaça o quiz.";
+
+        const resultadoHTML = `
             <div class="stats">
-                <p><strong>✅ Acertos:</strong> ${acertos} de ${total}</p>
-                <p><strong>❌ Erros:</strong> ${total - acertos} de ${total}</p>
-                <p><strong>📊 Percentual de acerto:</strong> ${percentual.toFixed(1)}%</p>
+                <p><strong>✅ Acertos:</strong> ${acertos} (${percentual.toFixed(1)}%)</p>
+                <p><strong>❌ Erros:</strong> ${erros}</p>
                 <p><strong>🎓 Nota (0 a 10):</strong> ${nota.toFixed(1)}</p>
-                <hr>
+                <p><strong>📊 Percentual de acerto:</strong> ${percentual.toFixed(1)}%</p>
+                <hr style="margin: 15px 0;">
                 <p>${mensagem}</p>
             </div>
         `;
+        resultContent.innerHTML = resultadoHTML;
         quizScreen.classList.remove('active');
         resultScreen.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function reiniciar() {
+    function reiniciarQuiz() {
         userAnswers = new Array(total).fill(null);
+        userJustification = new Array(total).fill(null);
         currentIndex = 0;
         resultScreen.classList.remove('active');
-        introScreen.classList.add('active');
+        endScreen.classList.remove('active');
+        capaScreen.classList.remove('active');
+        quizScreen.classList.add('active');
+        renderQuestion();
     }
-    restartQuizBtn.addEventListener('click', reiniciar);
+
     startQuizBtn.addEventListener('click', () => {
-        introScreen.classList.remove('active');
+        capaScreen.classList.remove('active');
         quizScreen.classList.add('active');
         renderQuestion();
     });
-    applyFontSize();
+
+    restartQuizBtn.addEventListener('click', reiniciarQuiz);
+    restartFromEndBtn.addEventListener('click', reiniciarQuiz);
+
+    endQuizBtn.addEventListener('click', () => {
+        resultScreen.classList.remove('active');
+        quizScreen.classList.remove('active');
+        capaScreen.classList.remove('active');
+        endScreen.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    setFontSize(16);
 </script>
 </body>
 </html>
